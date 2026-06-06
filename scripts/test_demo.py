@@ -1,7 +1,9 @@
-from backend.services.chunking_service import chunk_text
+from backend.services.chroma_service import collection
 
-text = "A" * 5000
+results = collection.get()
 
-chunks = chunk_text(text)
+print("Total documents:", len(results["ids"]))
 
-print(len(chunks))
+for metadata in results["metadatas"]:
+    if metadata["file_type"] == "image":
+        print(metadata)

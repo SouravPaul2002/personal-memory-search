@@ -1,42 +1,98 @@
 {
-    "data/pdfs\\DBMS.pdf": {
+    "C:\\RoNi\\personal-memory-search\\data\\pdfs\\DBMS.pdf": {
         "file_name": "DBMS.pdf",
         "file_type": "pdf",
         "modified_time": 1780678320.1915352,
         "file_size": 11211566,
         "content_hash": "112115c810a1f47f517033e8d80d1c3d64e645a5ea384215f1f9414f78e85dd8",
-        "last_indexed": "2026-06-06T09:31:42.955652"
+        "last_indexed": "2026-06-06T12:37:53.724619"
     },
-    "data/pdfs\\ML.pdf": {
-        "file_name": "ML.pdf",
-        "file_type": "pdf",
-        "modified_time": 1780684452.925079,
-        "file_size": 5173397,
-        "content_hash": "defd579186e4502ac8213d4e1cb12e8341ecb4a19128796120ec1f1ccf69516f",
-        "last_indexed": "2026-06-06T09:32:04.336122"
-    },
-    "data/pdfs\\OS.pdf": {
-        "file_name": "OS.pdf",
-        "file_type": "pdf",
-        "modified_time": 1780684379.0513864,
-        "file_size": 4838889,
-        "content_hash": "1f64ef139b5f7897ee772cbbf3c6ee363ab8930308a0378aaccd925bc609e47a",
-        "last_indexed": "2026-06-06T09:32:40.095222"
-    },
-    "data/pdfs\\PYTHON.pdf": {
-        "file_name": "PYTHON.pdf",
-        "file_type": "pdf",
-        "modified_time": 1780684422.5043492,
-        "file_size": 643652,
-        "content_hash": "ac39e76345fbac3f489be1a1d8a3283977247cdaea6288f4ad3d1b82a6d96453",
-        "last_indexed": "2026-06-06T09:33:03.228133"
-    },
-    "data/pdfs\\Java.pdf": {
+    "C:\\RoNi\\personal-memory-search\\data\\pdfs\\Java.pdf": {
         "file_name": "Java.pdf",
         "file_type": "pdf",
         "modified_time": 1780718683.85895,
         "file_size": 4022853,
         "content_hash": "bdaae48eecd17fabf6459c54c7c385797c0641a27d4b3b8e496ca4d33964f7f7",
-        "last_indexed": "2026-06-06T09:36:42.981099"
+        "last_indexed": "2026-06-06T12:38:12.670499"
+    },
+    "C:\\RoNi\\personal-memory-search\\data\\pdfs\\ML.pdf": {
+        "file_name": "ML.pdf",
+        "file_type": "pdf",
+        "modified_time": 1780684452.925079,
+        "file_size": 5173397,
+        "content_hash": "defd579186e4502ac8213d4e1cb12e8341ecb4a19128796120ec1f1ccf69516f",
+        "last_indexed": "2026-06-06T12:38:39.836371"
+    },
+    "C:\\RoNi\\personal-memory-search\\data\\pdfs\\OOPS.pdf": {
+        "file_name": "OOPS.pdf",
+        "file_type": "pdf",
+        "modified_time": 1780684481.1323476,
+        "file_size": 2222356,
+        "content_hash": "5621ced7130e96549706881aecfdc388c36457acdbb554d010fa5f3ee162a2e6",
+        "last_indexed": "2026-06-06T12:38:52.177027"
+    },
+    "C:\\RoNi\\personal-memory-search\\data\\pdfs\\OS.pdf": {
+        "file_name": "OS.pdf",
+        "file_type": "pdf",
+        "modified_time": 1780684379.0513864,
+        "file_size": 4838889,
+        "content_hash": "1f64ef139b5f7897ee772cbbf3c6ee363ab8930308a0378aaccd925bc609e47a",
+        "last_indexed": "2026-06-06T12:39:28.044586"
+    },
+    "C:\\RoNi\\personal-memory-search\\data\\pdfs\\PYTHON.pdf": {
+        "file_name": "PYTHON.pdf",
+        "file_type": "pdf",
+        "modified_time": 1780684422.5043492,
+        "file_size": 643652,
+        "content_hash": "ac39e76345fbac3f489be1a1d8a3283977247cdaea6288f4ad3d1b82a6d96453",
+        "last_indexed": "2026-06-06T12:40:00.277991"
+    },
+    "C:\\RoNi\\personal-memory-search\\data\\images\\test.jpeg": {
+        "file_name": "test.jpeg",
+        "file_type": "image",
+        "modified_time": 1780723672.198169,
+        "file_size": 61649,
+        "content_hash": "93121fd25e13208ba005ec869a09390f51bad13938ca650d8f99b2d0006683d5",
+        "last_indexed": "2026-06-06T12:40:04.539325"
+    },
+    "C:\\RoNi\\personal-memory-search\\data\\images\\WhatsApp Image 2026-06-06 at 10.56.30 (1).jpeg": {
+        "file_name": "WhatsApp Image 2026-06-06 at 10.56.30 (1).jpeg",
+        "file_type": "image",
+        "modified_time": 1780723665.993567,
+        "file_size": 68668,
+        "content_hash": "d807881f565d886c808c49b38872a18af8bc110b40976f021233e764982a2970",
+        "last_indexed": "2026-06-06T12:40:05.605942"
+    },
+    "C:\\RoNi\\personal-memory-search\\data\\images\\WhatsApp Image 2026-06-06 at 10.56.30 (2).jpeg": {
+        "file_name": "WhatsApp Image 2026-06-06 at 10.56.30 (2).jpeg",
+        "file_type": "image",
+        "modified_time": 1780723668.546251,
+        "file_size": 61761,
+        "content_hash": "cc4056db0ec82d3178d4bfc3c9b24ddd8f45fa9c471fd3919b7238c917af42fb",
+        "last_indexed": "2026-06-06T12:40:06.829288"
+    },
+    "C:\\RoNi\\personal-memory-search\\data\\images\\WhatsApp Image 2026-06-06 at 10.56.30.jpeg": {
+        "file_name": "WhatsApp Image 2026-06-06 at 10.56.30.jpeg",
+        "file_type": "image",
+        "modified_time": 1780723661.7409608,
+        "file_size": 97118,
+        "content_hash": "35682c004189f99c828abcfd176d08cc7839822e9614edcde1452e3c3b6ada47",
+        "last_indexed": "2026-06-06T12:40:08.841346"
+    },
+    "C:\\RoNi\\personal-memory-search\\data\\images\\WhatsApp Image 2026-06-06 at 10.56.31 (1).jpeg": {
+        "file_name": "WhatsApp Image 2026-06-06 at 10.56.31 (1).jpeg",
+        "file_type": "image",
+        "modified_time": 1780723676.1060424,
+        "file_size": 235144,
+        "content_hash": "652818bb064c9a01607e460de8d01ecfa54fc067477e48c9e2962b2f0f7000c0",
+        "last_indexed": "2026-06-06T12:40:10.323587"
+    },
+    "C:\\RoNi\\personal-memory-search\\data\\images\\WhatsApp Image 2026-06-06 at 10.56.31 (2).jpeg": {
+        "file_name": "WhatsApp Image 2026-06-06 at 10.56.31 (2).jpeg",
+        "file_type": "image",
+        "modified_time": 1780723679.1026857,
+        "file_size": 258422,
+        "content_hash": "cd05408ec35793ef98d2e5fa42cbd9f0bacbf75a111bb55ec1c2e56933a7c8c9",
+        "last_indexed": "2026-06-06T12:40:13.390803"
     }
 }

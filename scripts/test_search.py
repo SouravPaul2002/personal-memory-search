@@ -1,14 +1,26 @@
 from backend.services.embedding_service import generate_embedding
 from backend.services.chroma_service import collection
 
+search_type = input(
+    "Search Type (all/pdf/image): "
+).lower()
 query = input("Search: ")
+
+where_filter = None
+
+if search_type == "pdf":
+    where_filter = {"file_type": "pdf"}
+
+elif search_type == "image":
+    where_filter = {"file_type": "image"}
 
 query_embedding = generate_embedding(query)
 
 results = collection.query(
     query_embeddings=[query_embedding],
     n_results=20,
-    include=["documents", "metadatas", "distances"]
+    include=["documents", "metadatas", "distances"],
+    where= where_filter
 )
 
 best_files = {}
@@ -28,7 +40,8 @@ for metadata, distance, document in zip(
         best_files[file_name] = {
             "path": metadata["file_path"],
             "distance": distance,
-            "preview": document
+            "preview": document,
+            "file_type": metadata["file_type"]
         }
 
 sorted_results = sorted(
@@ -38,8 +51,9 @@ sorted_results = sorted(
 
 print("\nBest Matching Files:\n")
 
-for file_name, info in sorted_results[:5]:
+for file_name, info in sorted_results[:10]:
 
+    print(f"Type: {info['file_type']}")
     print(f"File: {file_name}")
     print(f"Path: {info['path']}")
     print(f"Distance: {info['distance']:.4f}")

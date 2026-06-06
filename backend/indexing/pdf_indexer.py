@@ -22,7 +22,7 @@ def index_pdf(pdf_path, filename):
 
     for i, chunk in enumerate(chunks):
 
-        ids.append(f"{filename}_{i}")
+        ids.append(f"pdf_{filename}_{i}")
 
         documents.append(chunk)
 
