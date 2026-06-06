@@ -4,3 +4,5 @@ pypdf
 pytesseract
 Pillow
 yake
+python-docx
+python-pptx

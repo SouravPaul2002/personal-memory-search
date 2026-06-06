@@ -6,7 +6,7 @@ from backend.services.hybrid_service import keyword_match_score
 registry = load_registry()
 
 search_type = input(
-    "Search Type (all/pdf/image): "
+    "Search Type (all/pdf/image/txt/docx/pptx): "
 ).lower()
 query = input("Search: ")
 
@@ -17,6 +17,15 @@ if search_type == "pdf":
 
 elif search_type == "image":
     where_filter = {"file_type": "image"}
+
+elif search_type == "txt":
+    where_filter = {"file_type": "txt"}
+
+elif search_type == "docx":
+    where_filter = {"file_type": "docx"}
+
+elif search_type == "pptx":
+    where_filter = {"file_type": "pptx"}
 
 query_embedding = generate_embedding(query)
 

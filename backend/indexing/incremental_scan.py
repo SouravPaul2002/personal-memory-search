@@ -20,6 +20,21 @@ from backend.indexing.image_indexer import (
     delete_image_chunks
 )
 
+from backend.indexing.txt_indexer import (
+    index_txt,
+    delete_txt_chunks
+)
+
+from backend.indexing.docx_indexer import (
+    index_docx,
+    delete_docx_chunks
+)
+
+from backend.indexing.pptx_indexer import (
+    index_pptx,
+    delete_pptx_chunks
+)
+
 PDF_FOLDER = "data/pdfs"
 
 IMAGE_FOLDER = "data/images"
@@ -30,8 +45,23 @@ IMAGE_EXTENSIONS = (
     ".webp"
 )
 
+TXT_FOLDER = "data/txts"
+
+DOCX_FOLDER = "data/docx"
+DOCX_EXTENSIONS = (
+    ".docx"
+)
+
+PPTX_FOLDER = "data/pptx"
+PPTX_EXTENSIONS = (
+    ".pptx"
+)
+
 os.makedirs(PDF_FOLDER, exist_ok=True)
 os.makedirs(IMAGE_FOLDER, exist_ok=True)
+os.makedirs(TXT_FOLDER, exist_ok=True)
+os.makedirs(DOCX_FOLDER, exist_ok=True)
+os.makedirs(PPTX_FOLDER, exist_ok=True)
 
 registry = load_registry()
 
@@ -92,6 +122,7 @@ for filename in os.listdir(PDF_FOLDER):
         registry[pdf_path]["content_hash"] = file_hash
         registry[pdf_path]["last_indexed"] = datetime.now().isoformat()
         registry[pdf_path]["keywords"] = result["keywords"]
+
 # incremental scan for Images
 for filename in os.listdir(IMAGE_FOLDER):
 
@@ -148,6 +179,174 @@ for filename in os.listdir(IMAGE_FOLDER):
         registry[image_path]["last_indexed"] = datetime.now().isoformat()
         registry[image_path]["keywords"] = result["keywords"]
 
+#incremental scan for TXT
+for filename in os.listdir(TXT_FOLDER):
+
+    if not filename.lower().endswith(".txt"):
+        continue
+
+    txt_path = os.path.abspath(
+        os.path.join(TXT_FOLDER, filename)
+    )
+
+    current_files.add(txt_path)
+
+    modified_time = os.path.getmtime(txt_path)
+
+    file_size = os.path.getsize(txt_path)
+
+    file_hash = get_file_hash(txt_path)
+
+    # NEW FILE
+    if txt_path not in registry:
+
+        print(f"\nNEW TXT: {filename}")
+
+        result = index_txt(
+            txt_path=txt_path,
+            filename=filename
+        )
+
+        registry[txt_path] = {
+            "file_name": filename,
+            "file_type": "txt",
+            "modified_time": modified_time,
+            "file_size": file_size,
+            "content_hash": file_hash,
+            "keywords": result["keywords"],
+            "last_indexed": datetime.now().isoformat()
+        }
+
+    # MODIFIED FILE
+    elif registry[txt_path]["content_hash"] != file_hash:
+
+        print(f"\nMODIFIED TXT: {filename}")
+
+        delete_txt_chunks(filename)
+
+        result= index_txt(
+            txt_path=txt_path,
+            filename=filename
+        )
+
+        registry[txt_path]["modified_time"] = modified_time
+        registry[txt_path]["file_size"] = file_size
+        registry[txt_path]["content_hash"] = file_hash
+        registry[txt_path]["last_indexed"] = datetime.now().isoformat()
+        registry[txt_path]["keywords"] = result["keywords"]
+
+#incremental scan for DOCX
+for filename in os.listdir(DOCX_FOLDER):
+
+    if not filename.lower().endswith(DOCX_EXTENSIONS):
+        continue
+
+    docx_path = os.path.abspath(
+        os.path.join(DOCX_FOLDER, filename)
+    )
+
+    current_files.add(docx_path)
+
+    modified_time = os.path.getmtime(docx_path)
+
+    file_size = os.path.getsize(docx_path)
+
+    file_hash = get_file_hash(docx_path)
+
+    # NEW FILE
+    if docx_path not in registry:
+
+        print(f"\nNEW DOCX: {filename}")
+
+        result = index_docx(
+            docx_path=docx_path,
+            filename=filename
+        )
+
+        registry[docx_path] = {
+            "file_name": filename,
+            "file_type": "docx",
+            "modified_time": modified_time,
+            "file_size": file_size,
+            "content_hash": file_hash,
+            "keywords": result["keywords"],
+            "last_indexed": datetime.now().isoformat()
+        }
+
+    # MODIFIED FILE
+    elif registry[docx_path]["content_hash"] != file_hash:
+
+        print(f"\nMODIFIED DOCX: {filename}")
+
+        delete_docx_chunks(filename)
+
+        result= index_docx(
+            docx_path=docx_path,
+            filename=filename
+        )
+
+        registry[docx_path]["modified_time"] = modified_time
+        registry[docx_path]["file_size"] = file_size
+        registry[docx_path]["content_hash"] = file_hash
+        registry[docx_path]["last_indexed"] = datetime.now().isoformat()
+        registry[docx_path]["keywords"] = result["keywords"]
+
+
+#incremental scan for PPTX
+for filename in os.listdir(PPTX_FOLDER):
+
+    if not filename.lower().endswith(PPTX_EXTENSIONS):
+        continue
+
+    pptx_path = os.path.abspath(
+        os.path.join(PPTX_FOLDER, filename)
+    )
+
+    current_files.add(pptx_path)
+
+    modified_time = os.path.getmtime(pptx_path)
+
+    file_size = os.path.getsize(pptx_path)
+
+    file_hash = get_file_hash(pptx_path)
+
+    # NEW FILE
+    if pptx_path not in registry:
+
+        print(f"\nNEW PPTX: {filename}")
+
+        result = index_pptx(
+            pptx_path=pptx_path,
+            filename=filename
+        )
+
+        registry[pptx_path] = {
+            "file_name": filename,
+            "file_type": "pptx",
+            "modified_time": modified_time,
+            "file_size": file_size,
+            "content_hash": file_hash,
+            "keywords": result["keywords"],
+            "last_indexed": datetime.now().isoformat()
+        }
+
+    # MODIFIED FILE
+    elif registry[pptx_path]["content_hash"] != file_hash:
+
+        print(f"\nMODIFIED PPTX: {filename}")
+
+        delete_pptx_chunks(filename)
+
+        result= index_pptx(
+            pptx_path=pptx_path,
+            filename=filename
+        )
+
+        registry[pptx_path]["modified_time"] = modified_time
+        registry[pptx_path]["file_size"] = file_size
+        registry[pptx_path]["content_hash"] = file_hash
+        registry[pptx_path]["last_indexed"] = datetime.now().isoformat()
+        registry[pptx_path]["keywords"] = result["keywords"]
 
 
 # DELETED FILES
@@ -167,6 +366,15 @@ for deleted_file in deleted_files:
 
     elif file_type == "image":
         delete_image_chunks(filename)
+
+    elif file_type == "txt":
+        delete_txt_chunks(filename)
+
+    elif file_type == "docx":
+        delete_docx_chunks(filename)
+
+    elif file_type == "pptx":
+        delete_pptx_chunks(filename)
 
     del registry[deleted_file]
 
