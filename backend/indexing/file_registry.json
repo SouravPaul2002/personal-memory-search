@@ -1,0 +1,42 @@
+{
+    "data/pdfs\\DBMS.pdf": {
+        "file_name": "DBMS.pdf",
+        "file_type": "pdf",
+        "modified_time": 1780678320.1915352,
+        "file_size": 11211566,
+        "content_hash": "112115c810a1f47f517033e8d80d1c3d64e645a5ea384215f1f9414f78e85dd8",
+        "last_indexed": "2026-06-06T09:31:42.955652"
+    },
+    "data/pdfs\\ML.pdf": {
+        "file_name": "ML.pdf",
+        "file_type": "pdf",
+        "modified_time": 1780684452.925079,
+        "file_size": 5173397,
+        "content_hash": "defd579186e4502ac8213d4e1cb12e8341ecb4a19128796120ec1f1ccf69516f",
+        "last_indexed": "2026-06-06T09:32:04.336122"
+    },
+    "data/pdfs\\OS.pdf": {
+        "file_name": "OS.pdf",
+        "file_type": "pdf",
+        "modified_time": 1780684379.0513864,
+        "file_size": 4838889,
+        "content_hash": "1f64ef139b5f7897ee772cbbf3c6ee363ab8930308a0378aaccd925bc609e47a",
+        "last_indexed": "2026-06-06T09:32:40.095222"
+    },
+    "data/pdfs\\PYTHON.pdf": {
+        "file_name": "PYTHON.pdf",
+        "file_type": "pdf",
+        "modified_time": 1780684422.5043492,
+        "file_size": 643652,
+        "content_hash": "ac39e76345fbac3f489be1a1d8a3283977247cdaea6288f4ad3d1b82a6d96453",
+        "last_indexed": "2026-06-06T09:33:03.228133"
+    },
+    "data/pdfs\\Java.pdf": {
+        "file_name": "Java.pdf",
+        "file_type": "pdf",
+        "modified_time": 1780718683.85895,
+        "file_size": 4022853,
+        "content_hash": "bdaae48eecd17fabf6459c54c7c385797c0641a27d4b3b8e496ca4d33964f7f7",
+        "last_indexed": "2026-06-06T09:36:42.981099"
+    }
+}

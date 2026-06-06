@@ -1,13 +1,22 @@
-def chunk_text(text, chunk_size=1000, overlap=200):
+def chunk_text(text, chunk_size=500, overlap=50):
+    """
+    Word-based chunking with overlap.
+    More accurate than character chunking.
+    """
+
+    words = text.split()
+
     chunks = []
 
-    start = 0
+    step = chunk_size - overlap
 
-    while start < len(text):
-        end = start + chunk_size
+    for i in range(0, len(words), step):
 
-        chunks.append(text[start:end])
+        chunk = " ".join(
+            words[i:i + chunk_size]
+        )
 
-        start += chunk_size - overlap
+        if len(chunk.strip()) > 100:
+            chunks.append(chunk)
 
     return chunks
