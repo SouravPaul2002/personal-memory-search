@@ -2,11 +2,18 @@ from backend.services.image_service import extract_text_from_image
 from backend.services.chunking_service import chunk_text
 from backend.services.embedding_service import generate_embeddings
 from backend.services.chroma_service import collection
+from backend.services.metadata_service import ( extract_keywords )
 
 
 def index_image(image_path, filename):
 
     text = extract_text_from_image(image_path)
+    keywords = extract_keywords(
+        text=text,
+        max_keywords=10
+    )
+
+    keywords_text = ", ".join(keywords)
 
     if not text.strip():
         print("No text extracted")
@@ -31,7 +38,8 @@ def index_image(image_path, filename):
             "file_name": filename,
             "file_path": image_path,
             "file_type": "image",
-            "chunk_index": i
+            "chunk_index": i,
+            "keywords": keywords_text
         })
 
     collection.add(
@@ -43,7 +51,10 @@ def index_image(image_path, filename):
 
     print(f"Indexed: {filename}")
 
-    return len(chunks)
+    return {
+        "chunks": len(chunks),
+        "keywords": keywords
+    }
 
 
 def delete_image_chunks(filename):

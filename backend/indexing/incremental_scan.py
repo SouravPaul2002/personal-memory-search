@@ -60,7 +60,7 @@ for filename in os.listdir(PDF_FOLDER):
 
         print(f"\nNEW PDF: {filename}")
 
-        index_pdf(
+        result = index_pdf(
             pdf_path=pdf_path,
             filename=filename
         )
@@ -71,6 +71,7 @@ for filename in os.listdir(PDF_FOLDER):
             "modified_time": modified_time,
             "file_size": file_size,
             "content_hash": file_hash,
+            "keywords": result["keywords"],
             "last_indexed": datetime.now().isoformat()
         }
 
@@ -81,7 +82,7 @@ for filename in os.listdir(PDF_FOLDER):
 
         delete_pdf_chunks(filename)
 
-        index_pdf(
+        result= index_pdf(
             pdf_path=pdf_path,
             filename=filename
         )
@@ -90,7 +91,7 @@ for filename in os.listdir(PDF_FOLDER):
         registry[pdf_path]["file_size"] = file_size
         registry[pdf_path]["content_hash"] = file_hash
         registry[pdf_path]["last_indexed"] = datetime.now().isoformat()
-
+        registry[pdf_path]["keywords"] = result["keywords"]
 # incremental scan for Images
 for filename in os.listdir(IMAGE_FOLDER):
 
@@ -114,7 +115,7 @@ for filename in os.listdir(IMAGE_FOLDER):
 
         print(f"\nNEW IMAGE: {filename}")
 
-        index_image(
+        result = index_image(
             image_path=image_path,
             filename=filename
         )
@@ -125,6 +126,7 @@ for filename in os.listdir(IMAGE_FOLDER):
             "modified_time": modified_time,
             "file_size": file_size,
             "content_hash": file_hash,
+            "keywords": result["keywords"],
             "last_indexed": datetime.now().isoformat()
         }
 
@@ -135,7 +137,7 @@ for filename in os.listdir(IMAGE_FOLDER):
 
         delete_image_chunks(filename)
 
-        index_image(
+        result= index_image(
             image_path=image_path,
             filename=filename
         )
@@ -144,6 +146,7 @@ for filename in os.listdir(IMAGE_FOLDER):
         registry[image_path]["file_size"] = file_size
         registry[image_path]["content_hash"] = file_hash
         registry[image_path]["last_indexed"] = datetime.now().isoformat()
+        registry[image_path]["keywords"] = result["keywords"]
 
 
 

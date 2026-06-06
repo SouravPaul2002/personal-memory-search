@@ -2,11 +2,19 @@ from backend.services.pdf_service import extract_text_from_pdf
 from backend.services.chunking_service import chunk_text
 from backend.services.embedding_service import generate_embeddings
 from backend.services.chroma_service import collection
+from backend.services.metadata_service import ( extract_keywords )
 
 
 def index_pdf(pdf_path, filename):
 
     text = extract_text_from_pdf(pdf_path)
+
+    keywords = extract_keywords(
+        text=text,
+        max_keywords=30
+    )
+
+    keywords_text = ", ".join(keywords)
 
     if not text.strip():
         print("No text extracted")
@@ -30,7 +38,8 @@ def index_pdf(pdf_path, filename):
             "file_name": filename,
             "file_path": pdf_path,
             "file_type": "pdf",
-            "chunk_index": i
+            "chunk_index": i,
+            "keywords": keywords_text
         })
 
     collection.add(
@@ -42,7 +51,10 @@ def index_pdf(pdf_path, filename):
 
     print(f"Indexed: {filename}")
 
-    return len(chunks)
+    return {
+        "chunks": len(chunks),
+        "keywords": keywords
+    }
 
 
 def delete_pdf_chunks(filename):

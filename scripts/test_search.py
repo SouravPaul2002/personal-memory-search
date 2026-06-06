@@ -1,5 +1,9 @@
 from backend.services.embedding_service import generate_embedding
 from backend.services.chroma_service import collection
+from backend.indexing.file_registry import ( load_registry )
+from backend.services.hybrid_service import keyword_match_score
+
+registry = load_registry()
 
 search_type = input(
     "Search Type (all/pdf/image): "
@@ -44,9 +48,34 @@ for metadata, distance, document in zip(
             "file_type": metadata["file_type"]
         }
 
+for file_name, info in best_files.items():
+
+    keyword_score = 0
+
+    for path, data in registry.items():
+
+        if data["file_name"] == file_name:
+
+            keyword_score = (
+                keyword_match_score(
+                    query,
+                    data.get(
+                        "keywords",
+                        []
+                    )
+                )
+            )
+
+            break
+
+    info["keyword_score"] = keyword_score
+
 sorted_results = sorted(
     best_files.items(),
-    key=lambda x: x[1]["distance"]
+    key=lambda x: (
+        -x[1]["keyword_score"],
+        x[1]["distance"]
+    )
 )
 
 print("\nBest Matching Files:\n")
@@ -56,6 +85,7 @@ for file_name, info in sorted_results[:10]:
     print(f"Type: {info['file_type']}")
     print(f"File: {file_name}")
     print(f"Path: {info['path']}")
+    print(f"Keyword Score: {info['keyword_score']}")
     print(f"Distance: {info['distance']:.4f}")
 
     print("\nPreview:")

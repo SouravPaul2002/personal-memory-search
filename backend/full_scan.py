@@ -1,59 +1,63 @@
 import os
 
-from backend.services.pdf_service import extract_text_from_pdf
-from backend.services.chunking_service import chunk_text
-from backend.services.embedding_service import generate_embeddings
-from backend.services.chroma_service import collection
+from backend.indexing.pdf_indexer import index_pdf
+from backend.indexing.image_indexer import index_image
 
 PDF_FOLDER = "data/pdfs"
 
+IMAGE_FOLDER = "data/images"
+
+IMAGE_EXTENSIONS = (
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".webp"
+)
+
+# PDFs
 for filename in os.listdir(PDF_FOLDER):
 
     if not filename.lower().endswith(".pdf"):
         continue
 
-    pdf_path = os.path.join(PDF_FOLDER, filename)
+    pdf_path = os.path.join(
+        PDF_FOLDER,
+        filename
+    )
 
     print(f"\nIndexing: {filename}")
 
-    text = extract_text_from_pdf(pdf_path)
-
-    if not text.strip():
-        print("No text extracted.")
-        continue
-
-    chunks = chunk_text(text)
-
-    print(f"Chunks Created: {len(chunks)}")
-
-    embeddings = generate_embeddings(chunks)
-
-    ids = []
-    documents = []
-    metadatas = []
-
-    for i, chunk in enumerate(chunks):
-
-        ids.append(f"{filename}_{i}")
-
-        documents.append(chunk)
-
-        metadatas.append(
-            {
-                "file_name": filename,
-                "file_path": pdf_path,
-                "file_type": "pdf",
-                "chunk_index": i
-            }
-        )
-
-    collection.add(
-        ids=ids,
-        embeddings=embeddings,
-        documents=documents,
-        metadatas=metadatas
+    chunks_count = index_pdf(
+        pdf_path=pdf_path,
+        filename=filename
     )
 
-    print(f"Indexed {filename}")
+    print(
+        f"Chunks Created: {chunks_count}"
+    )
+
+# Images
+for filename in os.listdir(IMAGE_FOLDER):
+
+    if not filename.lower().endswith(
+        IMAGE_EXTENSIONS
+    ):
+        continue
+
+    image_path = os.path.join(
+        IMAGE_FOLDER,
+        filename
+    )
+
+    print(f"\nIndexing: {filename}")
+
+    chunks_count = index_image(
+        image_path=image_path,
+        filename=filename
+    )
+
+    print(
+        f"Chunks Created: {chunks_count}"
+    )
 
 print("\nIndexing Complete")

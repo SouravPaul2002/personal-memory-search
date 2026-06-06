@@ -1,9 +1,8 @@
 from backend.services.chroma_service import collection
 
-results = collection.get()
+data = collection.get(
+    limit=1,
+    include=["metadatas"]
+)
 
-print("Total documents:", len(results["ids"]))
-
-for metadata in results["metadatas"]:
-    if metadata["file_type"] == "image":
-        print(metadata)
+print(data["metadatas"][0])
