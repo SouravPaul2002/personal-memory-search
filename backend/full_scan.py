@@ -1,63 +1,24 @@
-import os
-
-from backend.indexing.pdf_indexer import index_pdf
-from backend.indexing.image_indexer import index_image
-
-PDF_FOLDER = "data/pdfs"
-
-IMAGE_FOLDER = "data/images"
-
-IMAGE_EXTENSIONS = (
-    ".jpg",
-    ".jpeg",
-    ".png",
-    ".webp"
+from backend.indexing.incremental_scan import (
+    run_incremental_scan
 )
 
-# PDFs
-for filename in os.listdir(PDF_FOLDER):
+from backend.indexing.file_registry import (
+    save_registry
+)
 
-    if not filename.lower().endswith(".pdf"):
-        continue
+from backend.services.chroma_service import (
+    collection
+)
 
-    pdf_path = os.path.join(
-        PDF_FOLDER,
-        filename
-    )
+def run_full_scan():
 
-    print(f"\nIndexing: {filename}")
+    all_ids = collection.get()["ids"]
 
-    chunks_count = index_pdf(
-        pdf_path=pdf_path,
-        filename=filename
-    )
+    if all_ids:
+        collection.delete(ids=all_ids)
 
-    print(
-        f"Chunks Created: {chunks_count}"
-    )
+    save_registry({})
 
-# Images
-for filename in os.listdir(IMAGE_FOLDER):
+    result = run_incremental_scan()
 
-    if not filename.lower().endswith(
-        IMAGE_EXTENSIONS
-    ):
-        continue
-
-    image_path = os.path.join(
-        IMAGE_FOLDER,
-        filename
-    )
-
-    print(f"\nIndexing: {filename}")
-
-    chunks_count = index_image(
-        image_path=image_path,
-        filename=filename
-    )
-
-    print(
-        f"Chunks Created: {chunks_count}"
-    )
-
-print("\nIndexing Complete")
+    return result
