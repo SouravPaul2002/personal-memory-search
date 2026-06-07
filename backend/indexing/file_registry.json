@@ -2,7 +2,9 @@
     "C:\\RoNi\\personal-memory-search\\data\\pdfs\\DBMS.pdf": {
         "file_name": "DBMS.pdf",
         "file_type": "pdf",
+        "created_time": 1780678320.1835341,
         "modified_time": 1780678320.1915352,
+        "mime_type": "application/pdf",
         "file_size": 11211566,
         "content_hash": "112115c810a1f47f517033e8d80d1c3d64e645a5ea384215f1f9414f78e85dd8",
         "keywords": [
@@ -37,12 +39,14 @@
             "SYSTEMS",
             "Kamal"
         ],
-        "last_indexed": "2026-06-07T12:21:26.545542"
+        "last_indexed": "2026-06-07T20:25:30.263142"
     },
     "C:\\RoNi\\personal-memory-search\\data\\pdfs\\Java.pdf": {
         "file_name": "Java.pdf",
         "file_type": "pdf",
+        "created_time": 1780718682.904314,
         "modified_time": 1780718683.85895,
+        "mime_type": "application/pdf",
         "file_size": 4022853,
         "content_hash": "bdaae48eecd17fabf6459c54c7c385797c0641a27d4b3b8e496ca4d33964f7f7",
         "keywords": [
@@ -77,12 +81,14 @@
             "object",
             "AWT"
         ],
-        "last_indexed": "2026-06-07T12:21:46.400692"
+        "last_indexed": "2026-06-07T20:25:51.706440"
     },
     "C:\\RoNi\\personal-memory-search\\data\\pdfs\\ML.pdf": {
         "file_name": "ML.pdf",
         "file_type": "pdf",
+        "created_time": 1780684452.3897862,
         "modified_time": 1780684452.925079,
+        "mime_type": "application/pdf",
         "file_size": 5173397,
         "content_hash": "defd579186e4502ac8213d4e1cb12e8341ecb4a19128796120ec1f1ccf69516f",
         "keywords": [
@@ -117,12 +123,14 @@
             "neural network",
             "target function"
         ],
-        "last_indexed": "2026-06-07T12:22:07.302591"
+        "last_indexed": "2026-06-07T20:26:12.289716"
     },
     "C:\\RoNi\\personal-memory-search\\data\\pdfs\\OOPS.pdf": {
         "file_name": "OOPS.pdf",
         "file_type": "pdf",
+        "created_time": 1780684480.591205,
         "modified_time": 1780684481.1323476,
+        "mime_type": "application/pdf",
         "file_size": 2222356,
         "content_hash": "5621ced7130e96549706881aecfdc388c36457acdbb554d010fa5f3ee162a2e6",
         "keywords": [
@@ -157,12 +165,14 @@
             "Derived",
             "operator function"
         ],
-        "last_indexed": "2026-06-07T12:22:17.021134"
+        "last_indexed": "2026-06-07T20:26:21.976423"
     },
     "C:\\RoNi\\personal-memory-search\\data\\pdfs\\OS.pdf": {
         "file_name": "OS.pdf",
         "file_type": "pdf",
+        "created_time": 1780684378.0835915,
         "modified_time": 1780684379.0513864,
+        "mime_type": "application/pdf",
         "file_size": 4838889,
         "content_hash": "1f64ef139b5f7897ee772cbbf3c6ee363ab8930308a0378aaccd925bc609e47a",
         "keywords": [
@@ -197,12 +207,14 @@
             "data",
             "System Call"
         ],
-        "last_indexed": "2026-06-07T12:22:40.764103"
+        "last_indexed": "2026-06-07T20:26:45.652995"
     },
     "C:\\RoNi\\personal-memory-search\\data\\pdfs\\PYTHON.pdf": {
         "file_name": "PYTHON.pdf",
         "file_type": "pdf",
+        "created_time": 1780684421.8477426,
         "modified_time": 1780684422.5043492,
+        "mime_type": "application/pdf",
         "file_size": 643652,
         "content_hash": "ac39e76345fbac3f489be1a1d8a3283977247cdaea6288f4ad3d1b82a6d96453",
         "keywords": [
@@ -237,12 +249,14 @@
             "CHAPTER",
             "Glossary Python"
         ],
-        "last_indexed": "2026-06-07T12:23:06.067228"
+        "last_indexed": "2026-06-07T20:27:09.385109"
     },
     "C:\\RoNi\\personal-memory-search\\data\\images\\test.jpeg": {
         "file_name": "test.jpeg",
         "file_type": "image",
+        "created_time": 1780723754.9823134,
         "modified_time": 1780723672.198169,
+        "mime_type": "image/jpeg",
         "file_size": 61649,
         "content_hash": "93121fd25e13208ba005ec869a09390f51bad13938ca650d8f99b2d0006683d5",
         "keywords": [
@@ -257,12 +271,14 @@
             "development",
             "languages"
         ],
-        "last_indexed": "2026-06-07T12:23:10.604375"
+        "last_indexed": "2026-06-07T20:27:11.840121"
     },
     "C:\\RoNi\\personal-memory-search\\data\\images\\WhatsApp Image 2026-06-06 at 10.56.30 (1).jpeg": {
         "file_name": "WhatsApp Image 2026-06-06 at 10.56.30 (1).jpeg",
         "file_type": "image",
+        "created_time": 1780723755.036918,
         "modified_time": 1780723665.993567,
+        "mime_type": "image/jpeg",
         "file_size": 68668,
         "content_hash": "d807881f565d886c808c49b38872a18af8bc110b40976f021233e764982a2970",
         "keywords": [
@@ -277,12 +293,14 @@
             "wil",
             "oradi."
         ],
-        "last_indexed": "2026-06-07T12:23:11.781821"
+        "last_indexed": "2026-06-07T20:27:12.879276"
     },
     "C:\\RoNi\\personal-memory-search\\data\\images\\WhatsApp Image 2026-06-06 at 10.56.30 (2).jpeg": {
         "file_name": "WhatsApp Image 2026-06-06 at 10.56.30 (2).jpeg",
         "file_type": "image",
+        "created_time": 1780723755.0093155,
         "modified_time": 1780723668.546251,
+        "mime_type": "image/jpeg",
         "file_size": 61761,
         "content_hash": "cc4056db0ec82d3178d4bfc3c9b24ddd8f45fa9c471fd3919b7238c917af42fb",
         "keywords": [
@@ -297,12 +315,14 @@
             "CHANNELS TRUE",
             "Popular Plans"
         ],
-        "last_indexed": "2026-06-07T12:23:13.116609"
+        "last_indexed": "2026-06-07T20:27:14.145138"
     },
     "C:\\RoNi\\personal-memory-search\\data\\images\\WhatsApp Image 2026-06-06 at 10.56.30.jpeg": {
         "file_name": "WhatsApp Image 2026-06-06 at 10.56.30.jpeg",
         "file_type": "image",
+        "created_time": 1780723755.0679214,
         "modified_time": 1780723661.7409608,
+        "mime_type": "image/jpeg",
         "file_size": 97118,
         "content_hash": "35682c004189f99c828abcfd176d08cc7839822e9614edcde1452e3c3b6ada47",
         "keywords": [
@@ -317,12 +337,14 @@
             "Hennebont",
             "siege"
         ],
-        "last_indexed": "2026-06-07T12:23:15.088209"
+        "last_indexed": "2026-06-07T20:27:16.288388"
     },
     "C:\\RoNi\\personal-memory-search\\data\\images\\WhatsApp Image 2026-06-06 at 10.56.31 (1).jpeg": {
         "file_name": "WhatsApp Image 2026-06-06 at 10.56.31 (1).jpeg",
         "file_type": "image",
+        "created_time": 1780723754.9573133,
         "modified_time": 1780723676.1060424,
+        "mime_type": "image/jpeg",
         "file_size": 235144,
         "content_hash": "652818bb064c9a01607e460de8d01ecfa54fc067477e48c9e2962b2f0f7000c0",
         "keywords": [
@@ -337,12 +359,14 @@
             "arr mid",
             "mergeSort"
         ],
-        "last_indexed": "2026-06-07T12:23:16.578714"
+        "last_indexed": "2026-06-07T20:27:17.853420"
     },
     "C:\\RoNi\\personal-memory-search\\data\\images\\WhatsApp Image 2026-06-06 at 10.56.31 (2).jpeg": {
         "file_name": "WhatsApp Image 2026-06-06 at 10.56.31 (2).jpeg",
         "file_type": "image",
+        "created_time": 1780723754.900783,
         "modified_time": 1780723679.1026857,
+        "mime_type": "image/jpeg",
         "file_size": 258422,
         "content_hash": "cd05408ec35793ef98d2e5fa42cbd9f0bacbf75a111bb55ec1c2e56933a7c8c9",
         "keywords": [
@@ -357,12 +381,14 @@
             "VIS",
             "INAUGURATION CEREMONY"
         ],
-        "last_indexed": "2026-06-07T12:23:19.598028"
+        "last_indexed": "2026-06-07T20:27:20.523503"
     },
     "C:\\RoNi\\personal-memory-search\\data\\txts\\BAB.txt": {
         "file_name": "BAB.txt",
         "file_type": "txt",
+        "created_time": 1780765219.3562627,
         "modified_time": 1780765226.5949044,
+        "mime_type": "text/plain",
         "file_size": 2842,
         "content_hash": "9cb9b2eb0f21345838837790245e1b0530114554279bdf80c0fb880175ff0fb2",
         "keywords": [
@@ -397,12 +423,14 @@
             "Belle learned",
             "scary"
         ],
-        "last_indexed": "2026-06-07T12:23:19.977034"
+        "last_indexed": "2026-06-07T20:27:20.921235"
     },
     "C:\\RoNi\\personal-memory-search\\data\\txts\\brown-dog.txt": {
         "file_name": "brown-dog.txt",
         "file_type": "txt",
+        "created_time": 1780765863.9930842,
         "modified_time": 1780765866.8912706,
+        "mime_type": "text/plain",
         "file_size": 9931,
         "content_hash": "f39d1d91a159fede61e0bcb7b57fbae5159616a3892355f5b62127cc7c11683b",
         "keywords": [
@@ -437,12 +465,14 @@
             "floor",
             "engrossed child"
         ],
-        "last_indexed": "2026-06-07T12:23:20.897818"
+        "last_indexed": "2026-06-07T20:27:21.810017"
     },
     "C:\\RoNi\\personal-memory-search\\data\\txts\\coward.txt": {
         "file_name": "coward.txt",
         "file_type": "txt",
+        "created_time": 1780765823.242723,
         "modified_time": 1780765825.8108742,
+        "mime_type": "text/plain",
         "file_size": 16363,
         "content_hash": "699c0f45bfd50bb58f7ba4542d3e58fe311ab0a981940f32942a4500f82531ed",
         "keywords": [
@@ -477,12 +507,14 @@
             "Viscount walked",
             "ladies"
         ],
-        "last_indexed": "2026-06-07T12:23:22.343772"
+        "last_indexed": "2026-06-07T20:27:23.512354"
     },
     "C:\\RoNi\\personal-memory-search\\data\\docx\\THE STORY OF MY LIFE.docx": {
         "file_name": "THE STORY OF MY LIFE.docx",
         "file_type": "docx",
+        "created_time": 1780769495.4696343,
         "modified_time": 1780769496.925632,
+        "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "file_size": 17753,
         "content_hash": "f2057f83c327763da87140e0f4a29dc020b1f0f1b42e30ee27fe6e5b20a48e85",
         "keywords": [
@@ -517,12 +549,14 @@
             "pilot",
             "job"
         ],
-        "last_indexed": "2026-06-07T12:23:23.592333"
+        "last_indexed": "2026-06-07T20:27:24.641028"
     },
     "C:\\RoNi\\personal-memory-search\\data\\pptx\\dbms-ch1.pptx": {
         "file_name": "dbms-ch1.pptx",
         "file_type": "pptx",
+        "created_time": 1780771018.384414,
         "modified_time": 1780771026.4453256,
+        "mime_type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
         "file_size": 1367094,
         "content_hash": "2929a6d0783718aae4cd182565a349687f3e55fceb680150839b3419c91c824b",
         "keywords": [
@@ -557,6 +591,6 @@
             "DBMS",
             "transactions Airlines"
         ],
-        "last_indexed": "2026-06-07T12:23:24.829274"
+        "last_indexed": "2026-06-07T20:27:25.626395"
     }
 }

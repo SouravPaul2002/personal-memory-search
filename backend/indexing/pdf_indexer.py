@@ -2,7 +2,7 @@ from backend.services.pdf_service import extract_text_from_pdf
 from backend.services.chunking_service import chunk_text
 from backend.services.embedding_service import generate_embeddings
 from backend.services.chroma_service import collection
-from backend.services.metadata_service import ( extract_keywords )
+from backend.services.metadata_service import ( extract_keywords , build_enriched_text )
 
 
 def index_pdf(pdf_path, filename):
@@ -22,7 +22,22 @@ def index_pdf(pdf_path, filename):
 
     chunks = chunk_text(text)
 
-    embeddings = generate_embeddings(chunks)
+    enriched_chunks = []
+
+    for chunk in chunks:
+
+        enriched_text = build_enriched_text(
+            chunk,
+            keywords
+        )
+
+        enriched_chunks.append(
+            enriched_text
+        )
+
+    embeddings = generate_embeddings(
+        enriched_chunks
+    )
 
     ids = []
     documents = []

@@ -6,6 +6,7 @@ from backend.indexing.file_registry import (
     save_registry
 )
 
+from backend.services.file_metadata_service import get_mime_type
 from backend.services.hash_service import (
     get_file_hash
 )
@@ -83,7 +84,11 @@ def run_incremental_scan():
 
         current_files.add(pdf_path)
 
+        created_time = os.path.getctime(pdf_path)
+
         modified_time = os.path.getmtime(pdf_path)
+
+        mime_type = get_mime_type(pdf_path)
 
         file_size = os.path.getsize(pdf_path)
 
@@ -103,7 +108,9 @@ def run_incremental_scan():
             registry[pdf_path] = {
                 "file_name": filename,
                 "file_type": "pdf",
+                "created_time": created_time,
                 "modified_time": modified_time,
+                "mime_type": mime_type,
                 "file_size": file_size,
                 "content_hash": file_hash,
                 "keywords": result["keywords"],
@@ -124,6 +131,7 @@ def run_incremental_scan():
             )
 
             registry[pdf_path]["modified_time"] = modified_time
+            registry[pdf_path]["mime_type"] = mime_type
             registry[pdf_path]["file_size"] = file_size
             registry[pdf_path]["content_hash"] = file_hash
             registry[pdf_path]["last_indexed"] = datetime.now().isoformat()
@@ -143,6 +151,12 @@ def run_incremental_scan():
 
         modified_time = os.path.getmtime(image_path)
 
+        created_time = os.path.getctime(image_path)
+
+        mime_type = get_mime_type(
+            image_path
+        )
+
         file_size = os.path.getsize(image_path)
 
         file_hash = get_file_hash(image_path)
@@ -161,7 +175,9 @@ def run_incremental_scan():
             registry[image_path] = {
                 "file_name": filename,
                 "file_type": "image",
+                "created_time": created_time,
                 "modified_time": modified_time,
+                "mime_type": mime_type,
                 "file_size": file_size,
                 "content_hash": file_hash,
                 "keywords": result["keywords"],
@@ -182,6 +198,7 @@ def run_incremental_scan():
             )
 
             registry[image_path]["modified_time"] = modified_time
+            registry[image_path]["mime_type"] = mime_type
             registry[image_path]["file_size"] = file_size
             registry[image_path]["content_hash"] = file_hash
             registry[image_path]["last_indexed"] = datetime.now().isoformat()
@@ -201,6 +218,12 @@ def run_incremental_scan():
 
         modified_time = os.path.getmtime(txt_path)
 
+        created_time = os.path.getctime(txt_path)
+
+        mime_type = get_mime_type(
+            txt_path
+        )
+
         file_size = os.path.getsize(txt_path)
 
         file_hash = get_file_hash(txt_path)
@@ -219,7 +242,9 @@ def run_incremental_scan():
             registry[txt_path] = {
                 "file_name": filename,
                 "file_type": "txt",
+                "created_time": created_time,
                 "modified_time": modified_time,
+                "mime_type": mime_type,
                 "file_size": file_size,
                 "content_hash": file_hash,
                 "keywords": result["keywords"],
@@ -240,6 +265,7 @@ def run_incremental_scan():
             )
 
             registry[txt_path]["modified_time"] = modified_time
+            registry[txt_path]["mime_type"] = mime_type
             registry[txt_path]["file_size"] = file_size
             registry[txt_path]["content_hash"] = file_hash
             registry[txt_path]["last_indexed"] = datetime.now().isoformat()
@@ -259,6 +285,12 @@ def run_incremental_scan():
 
         modified_time = os.path.getmtime(docx_path)
 
+        created_time = os.path.getctime(docx_path)
+
+        mime_type = get_mime_type(
+            docx_path
+        )
+
         file_size = os.path.getsize(docx_path)
 
         file_hash = get_file_hash(docx_path)
@@ -277,7 +309,9 @@ def run_incremental_scan():
             registry[docx_path] = {
                 "file_name": filename,
                 "file_type": "docx",
+                "created_time": created_time,
                 "modified_time": modified_time,
+                "mime_type": mime_type,
                 "file_size": file_size,
                 "content_hash": file_hash,
                 "keywords": result["keywords"],
@@ -298,6 +332,7 @@ def run_incremental_scan():
             )
 
             registry[docx_path]["modified_time"] = modified_time
+            registry[docx_path]["mime_type"] = mime_type
             registry[docx_path]["file_size"] = file_size
             registry[docx_path]["content_hash"] = file_hash
             registry[docx_path]["last_indexed"] = datetime.now().isoformat()
@@ -318,6 +353,12 @@ def run_incremental_scan():
 
         modified_time = os.path.getmtime(pptx_path)
 
+        created_time = os.path.getctime(pptx_path)
+
+        mime_type = get_mime_type(
+            pptx_path
+        )
+
         file_size = os.path.getsize(pptx_path)
 
         file_hash = get_file_hash(pptx_path)
@@ -336,7 +377,9 @@ def run_incremental_scan():
             registry[pptx_path] = {
                 "file_name": filename,
                 "file_type": "pptx",
+                "created_time": created_time,
                 "modified_time": modified_time,
+                "mime_type": mime_type,
                 "file_size": file_size,
                 "content_hash": file_hash,
                 "keywords": result["keywords"],
@@ -357,6 +400,7 @@ def run_incremental_scan():
             )
 
             registry[pptx_path]["modified_time"] = modified_time
+            registry[pptx_path]["mime_type"] = mime_type
             registry[pptx_path]["file_size"] = file_size
             registry[pptx_path]["content_hash"] = file_hash
             registry[pptx_path]["last_indexed"] = datetime.now().isoformat()

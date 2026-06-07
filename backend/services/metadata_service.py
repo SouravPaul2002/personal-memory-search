@@ -8,7 +8,7 @@ def extract_keywords(
     keyword_extractor = yake.KeywordExtractor(
         lan="en",
         n=2,
-        dedupLim=0.8,
+        dedupLim=0.9,
         top=max_keywords
     )
 
@@ -30,3 +30,18 @@ def extract_keywords(
             cleaned_keywords.append(keyword)
 
     return cleaned_keywords
+
+
+def build_enriched_text(
+    chunk_text,
+    keywords
+):
+
+    keywords_text = " ".join(
+        keywords
+    )
+
+    return (
+        f"{keywords_text}\n\n"
+        f"{chunk_text}"
+    )

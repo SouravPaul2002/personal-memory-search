@@ -4,6 +4,9 @@ from backend.indexing.file_registry import load_registry
 from backend.services.hybrid_service import keyword_match_score
 from backend.services.ranking_service import filename_match_score
 from datetime import datetime
+from backend.services.date_query_service import (
+    extract_time_filter
+)
 
 
 def search_files(
@@ -11,6 +14,9 @@ def search_files(
     search_type="all"
 ):
     registry = load_registry()
+    time_filter = extract_time_filter(
+        query
+    )
 
     where_filter = None
 
@@ -141,6 +147,27 @@ def search_files(
             registry_data["modified_time"]
         ).strftime("%Y-%m-%d %H:%M:%S")
 
+        registry_data = {}
+
+        for path, data in registry.items():
+
+            if data["file_name"] == file_name:
+
+                registry_data = data
+
+                break
+        
+        if time_filter:
+
+            created_time = registry_data.get(
+                "created_time",
+                0
+            )
+
+            if created_time < time_filter:
+
+                continue
+
         results_list.append(
             {
                 "file_name": file_name,
@@ -151,7 +178,15 @@ def search_files(
 
                 "file_size": file_size_mb,
 
+                "created_time": registry_data.get(
+                    "created_time"
+                ),
+
                 "modified_time": modified_time,
+
+                "mime_type": registry_data.get(
+                    "mime_type"
+                ),
 
                 "last_indexed": registry_data.get(
                     "last_indexed"
