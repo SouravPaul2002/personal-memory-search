@@ -1,8 +1,26 @@
-from backend.services.chroma_service import collection
-
-data = collection.get(
-    limit=1,
-    include=["metadatas"]
+from backend.services.query_intent_service import (
+    detect_query_intent
 )
 
-print(data["metadatas"][0])
+queries = [
+
+    "python code image",
+
+    "red pen photo",
+
+    "database notes",
+
+    "python tutorial pdf",
+
+    "python screenshot",
+
+    "normalization notes"
+]
+
+for query in queries:
+
+    print(
+        query,
+        "->",
+        detect_query_intent(query)
+    )

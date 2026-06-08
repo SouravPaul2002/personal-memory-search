@@ -1,8 +1,11 @@
 from backend.services.image_service import extract_text_from_image
 from backend.services.chunking_service import chunk_text
 from backend.services.embedding_service import generate_embeddings
-from backend.services.chroma_service import collection
+from backend.services.chroma_service import ( collection , clip_collection)
 from backend.services.metadata_service import ( extract_keywords )
+from backend.services.clip_service import (
+    generate_image_embedding
+)
 
 
 def index_image(image_path, filename):
@@ -15,9 +18,33 @@ def index_image(image_path, filename):
 
     keywords_text = ", ".join(keywords)
 
+    # CLIP indexing
+    clip_embedding = generate_image_embedding(
+        image_path
+    )
+
+    clip_collection.add(
+        ids=[
+            f"clip_{filename}"
+        ],
+        embeddings=[
+            clip_embedding
+        ],
+        metadatas=[
+            {
+                "file_name": filename,
+                "file_path": image_path,
+                "file_type": "image"
+            }
+        ]
+    )
+
     if not text.strip():
         print("No text extracted")
-        return
+        return {
+            "chunks": 0,
+            "keywords": []
+        }
 
     print(f"OCR Text Length: {len(text)}")
     chunks = chunk_text(text)
@@ -74,6 +101,22 @@ def delete_image_chunks(filename):
 
             print(
                 f"Deleted {len(ids)} chunks "
+                f"for {filename}"
+            )
+        clip_results = clip_collection.get(
+            where={
+                "file_name": filename
+            }
+        )
+
+        clip_ids = clip_results["ids"]
+
+        if clip_ids:
+            clip_collection.delete(
+                ids=clip_ids
+            )
+            print(
+                f"Deleted {len(ids)} clip chunks "
                 f"for {filename}"
             )
 

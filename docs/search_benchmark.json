@@ -1,0 +1,122 @@
+[
+  {
+    "query": "learn python programming",
+    "expected": "PYTHON.pdf"
+  },
+  {
+    "query": "python notes pdf",
+    "expected": "PYTHON.pdf"
+  },
+  {
+    "query": "python study material",
+    "expected": "PYTHON.pdf"
+  },
+  {
+    "query": "python language tutorial",
+    "expected": "PYTHON.pdf"
+  },
+  {
+    "query": "python programming guide",
+    "expected": "PYTHON.pdf"
+  },
+  {
+    "query": "dbms notes pdf",
+    "expected": "DBMS.pdf"
+  },
+  {
+    "query": "database systems notes",
+    "expected": "DBMS.pdf"
+  },
+  {
+    "query": "database management study material",
+    "expected": "DBMS.pdf"
+  },
+  {
+    "query": "normalization notes",
+    "expected": "DBMS.pdf"
+  },
+  {
+    "query": "sql and dbms pdf",
+    "expected": "DBMS.pdf"
+  },
+  {
+    "query": "operating system study notes",
+    "expected": "OS.pdf"
+  },
+  {
+    "query": "os concepts pdf",
+    "expected": "OS.pdf"
+  },
+  {
+    "query": "cpu scheduling notes",
+    "expected": "OS.pdf"
+  },
+  {
+    "query": "process management pdf",
+    "expected": "OS.pdf"
+  },
+  {
+    "query": "memory management notes",
+    "expected": "OS.pdf"
+  },
+  {
+    "query": "machine learning notes",
+    "expected": "ML.pdf"
+  },
+  {
+    "query": "ml tutorial pdf",
+    "expected": "ML.pdf"
+  },
+  {
+    "query": "artificial intelligence study material",
+    "expected": "ML.pdf"
+  },
+  {
+    "query": "supervised learning notes",
+    "expected": "ML.pdf"
+  },
+  {
+    "query": "linear regression pdf",
+    "expected": "ML.pdf"
+  },
+  {
+    "query": "picture of a red pen",
+    "expected": "red-ballpoint-pen.jpeg"
+  },
+  {
+    "query": "red ballpoint pen photo",
+    "expected": "red-ballpoint-pen.jpeg"
+  },
+  {
+    "query": "writing pen image",
+    "expected": "red-ballpoint-pen.jpeg"
+  },
+  {
+    "query": "stationery pen picture",
+    "expected": "red-ballpoint-pen.jpeg"
+  },
+  {
+    "query": "red colored pen",
+    "expected": "red-ballpoint-pen.jpeg"
+  },
+  {
+    "query": "python program screenshot",
+    "expected": "test.jpeg"
+  },
+  {
+    "query": "python code image",
+    "expected": "test.jpeg"
+  },
+  {
+    "query": "screenshot containing python code",
+    "expected": "test.jpeg"
+  },
+  {
+    "query": "python script screenshot",
+    "expected": "test.jpeg"
+  },
+  {
+    "query": "coding screenshot in python",
+    "expected": "test.jpeg"
+  }
+]

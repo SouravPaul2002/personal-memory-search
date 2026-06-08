@@ -105,6 +105,9 @@ def run_incremental_scan():
                 filename=filename
             )
 
+            if result is None:
+                continue
+
             registry[pdf_path] = {
                 "file_name": filename,
                 "file_type": "pdf",
@@ -171,6 +174,9 @@ def run_incremental_scan():
                 image_path=image_path,
                 filename=filename
             )
+
+            if result is None:
+                continue
 
             registry[image_path] = {
                 "file_name": filename,
@@ -239,6 +245,9 @@ def run_incremental_scan():
                 filename=filename
             )
 
+            if result is None:
+                continue
+
             registry[txt_path] = {
                 "file_name": filename,
                 "file_type": "txt",
@@ -305,6 +314,9 @@ def run_incremental_scan():
                 docx_path=docx_path,
                 filename=filename
             )
+
+            if result is None:
+                continue
 
             registry[docx_path] = {
                 "file_name": filename,
@@ -373,6 +385,9 @@ def run_incremental_scan():
                 pptx_path=pptx_path,
                 filename=filename
             )
+
+            if result is None:
+                continue
 
             registry[pptx_path] = {
                 "file_name": filename,
