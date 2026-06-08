@@ -2,16 +2,23 @@ from backend.services.pdf_service import extract_text_from_pdf
 from backend.services.chunking_service import chunk_text
 from backend.services.embedding_service import generate_embeddings
 from backend.services.chroma_service import collection
-from backend.services.metadata_service import ( extract_keywords , build_enriched_text )
+from backend.services.metadata_service import ( build_topics, extract_chunk_keywords, extract_keywords , build_enriched_text )
 
 
 def index_pdf(pdf_path, filename):
 
     text = extract_text_from_pdf(pdf_path)
 
-    keywords = extract_keywords(
-        text=text,
-        max_keywords=30
+    chunks = chunk_text(text)
+
+    all_keywords = extract_chunk_keywords(
+        chunks,
+        max_keywords=10
+    )
+
+    keywords = build_topics(
+        all_keywords,
+        top_n=50
     )
 
     keywords_text = ", ".join(keywords)

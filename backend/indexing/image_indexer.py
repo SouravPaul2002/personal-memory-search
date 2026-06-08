@@ -48,7 +48,16 @@ def index_image(image_path, filename):
 
     print(f"OCR Text Length: {len(text)}")
     chunks = chunk_text(text)
+    if not chunks:
 
+        print(
+            f"CLIP indexed only: {filename}"
+        )
+
+        return {
+            "chunks": 0,
+            "keywords": keywords
+        }
     embeddings = generate_embeddings(chunks)
 
     ids = []
@@ -100,7 +109,7 @@ def delete_image_chunks(filename):
             collection.delete(ids=ids)
 
             print(
-                f"Deleted {len(ids)} chunks "
+                f"Deleted {len(clip_ids)} clip chunks "
                 f"for {filename}"
             )
         clip_results = clip_collection.get(
