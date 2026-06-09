@@ -3,7 +3,8 @@ import pytesseract
 
 # Windows path
 pytesseract.pytesseract.tesseract_cmd = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    # r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    r"D:\sourav paul\New folder\tesseract.exe"
 )
 
 

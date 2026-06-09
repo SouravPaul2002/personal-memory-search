@@ -73,6 +73,37 @@ def extract_chunk_keywords(
 
 def build_topics(
     keywords,
+    top_n=10
+):
+
+    counter = Counter()
+
+    for keyword in keywords:
+
+        counter[
+            keyword.lower()
+        ] += 1
+
+    return [
+        keyword
+        for keyword, count
+        in counter.most_common(top_n)
+    ]
+
+
+def generate_summary(
+    chunks,
+    max_length=500
+):
+
+    summary = " ".join(
+        chunks[:2]
+    )
+
+    return summary[:max_length]
+
+def build_topics(
+    keywords,
     top_n=30
 ):
 

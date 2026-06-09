@@ -6,9 +6,12 @@ from backend.services.metadata_service import ( extract_keywords )
 from backend.services.clip_service import (
     generate_image_embedding
 )
+from backend.services.metadata_service import ( build_topics, extract_chunk_keywords, extract_keywords , generate_summary , build_enriched_text )
+import time
 
 
 def index_image(image_path, filename):
+    start_time = time.time()
 
     text = extract_text_from_image(image_path)
     keywords = extract_keywords(
@@ -41,6 +44,10 @@ def index_image(image_path, filename):
 
     if not text.strip():
         print("No text extracted")
+        print(
+            f"{filename} indexed in "
+            f"{round(time.time() - start_time, 2)} sec"
+        )
         return {
             "chunks": 0,
             "keywords": []
@@ -48,12 +55,27 @@ def index_image(image_path, filename):
 
     print(f"OCR Text Length: {len(text)}")
     chunks = chunk_text(text)
+    
+    keywords = extract_chunk_keywords(
+        chunks
+    )
+
+    topics = build_topics(
+        keywords
+    )
+
+    summary = generate_summary(
+        chunks
+    )
     if not chunks:
 
         print(
             f"CLIP indexed only: {filename}"
         )
-
+        print(
+            f"{filename} indexed in "
+            f"{round(time.time() - start_time, 2)} sec"
+        )
         return {
             "chunks": 0,
             "keywords": keywords
@@ -87,9 +109,15 @@ def index_image(image_path, filename):
 
     print(f"Indexed: {filename}")
 
+    print(
+        f"{filename} indexed in "
+        f"{round(time.time() - start_time, 2)} sec"
+    )
     return {
         "chunks": len(chunks),
-        "keywords": keywords
+        "keywords": keywords,
+        "topics": topics,
+        "summary": summary
     }
 
 
@@ -109,7 +137,7 @@ def delete_image_chunks(filename):
             collection.delete(ids=ids)
 
             print(
-                f"Deleted {len(clip_ids)} clip chunks "
+                f"Deleted {len(ids)} image chunks "
                 f"for {filename}"
             )
         clip_results = clip_collection.get(
@@ -125,7 +153,7 @@ def delete_image_chunks(filename):
                 ids=clip_ids
             )
             print(
-                f"Deleted {len(ids)} clip chunks "
+                f"Deleted {len(clip_ids)} clip chunks "
                 f"for {filename}"
             )
 

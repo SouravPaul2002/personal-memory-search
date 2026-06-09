@@ -118,5 +118,125 @@
   {
     "query": "coding screenshot in python",
     "expected": "test.jpeg"
+  },
+  {
+    "query": "database notes added this week",
+    "expected": "DBMS.pdf"
+  },
+  {
+    "query": "operating system pdf from this month",
+    "expected": "OS.pdf"
+  },
+  {
+    "query": "machine learning notes added recently",
+    "expected": "ML.pdf"
+  },
+  {
+    "query": "red pen photo downloaded this week",
+    "expected": "red-ballpoint-pen.jpeg"
+  },
+  {
+    "query": "python code screenshot from today",
+    "expected": "test.jpeg"
+  },
+  {
+    "query": "database management pdf added this month",
+    "expected": "DBMS.pdf"
+  },
+  {
+    "query": "operating system notes from last week",
+    "expected": "OS.pdf"
+  },
+  {
+    "query": "machine learning study material added this month",
+    "expected": "ML.pdf"
+  },
+  {
+    "query": "python tutorial document from this week",
+    "expected": "PYTHON.pdf"
+  },
+  {
+    "query": "image of a red pen added recently",
+    "expected": "red-ballpoint-pen.jpeg"
+  },
+  {
+    "query": "coding screenshot saved this week",
+    "expected": "test.jpeg"
+  },
+  {
+    "query": "python notes downloaded recently",
+    "expected": "PYTHON.pdf"
+  },
+  {
+    "query": "dbms notes from this month",
+    "expected": "DBMS.pdf"
+  },
+  {
+    "query": "operating system material added recently",
+    "expected": "OS.pdf"
+  },
+  {
+    "query": "ml pdf downloaded this week",
+    "expected": "ML.pdf"
+  },
+  {
+    "query": "red colored pen image from today",
+    "expected": "red-ballpoint-pen.jpeg"
+  },
+  {
+    "query": "python script screenshot added recently",
+    "expected": "test.jpeg"
+  },
+  {
+    "query": "database subject notes downloaded this week",
+    "expected": "DBMS.pdf"
+  },
+  {
+    "query": "cpu scheduling notes from this month",
+    "expected": "OS.pdf"
+  },
+  {
+    "query": "linear regression pdf added recently",
+    "expected": "ML.pdf"
+  },
+  {
+    "query": "stationery image from this week",
+    "expected": "red-ballpoint-pen.jpeg"
+  },
+  {
+    "query": "python programming guide downloaded this month",
+    "expected": "PYTHON.pdf"
+  },
+  {
+    "query": "normalization notes added recently",
+    "expected": "DBMS.pdf"
+  },
+  {
+    "query": "memory management notes from this week",
+    "expected": "OS.pdf"
+  },
+  {
+    "query": "supervised learning notes downloaded recently",
+    "expected": "ML.pdf"
+  },
+  {
+    "query": "red pen picture saved this month",
+    "expected": "red-ballpoint-pen.jpeg"
+  },
+  {
+    "query": "python code image added this week",
+    "expected": "test.jpeg"
+  },
+  {
+    "query": "database pdf from today",
+    "expected": "DBMS.pdf"
+  },
+  {
+    "query": "os notes downloaded this month",
+    "expected": "OS.pdf"
+  },
+  {
+    "query": "machine learning pdf from this week",
+    "expected": "ML.pdf"
   }
 ]

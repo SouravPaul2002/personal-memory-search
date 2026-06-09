@@ -2,6 +2,7 @@ from backend.services.embedding_service import generate_embedding
 from backend.services.chroma_service import collection
 from backend.indexing.file_registry import load_registry
 from backend.services.hybrid_service import keyword_match_score
+from backend.services.metadata_ranking import metadata_score
 from backend.services.ranking_service import filename_match_score
 from datetime import datetime
 from backend.services.date_query_service import (
@@ -14,6 +15,10 @@ def search_files(
     search_type="all"
 ):
     registry = load_registry()
+    print(
+        "Loaded Registry:",
+        len(registry)
+    )
     time_filter = extract_time_filter(
         query
     )
@@ -90,12 +95,23 @@ def search_files(
             file_name
         )
 
+        metadata_score_value = metadata_score(
+            query=query,
+            topics=data.get("topics", []),
+            summary=data.get("summary", "")
+        )
+
         info["keyword_score"] = keyword_score
         info["filename_score"] = filename_score
 
+        info["metadata_score"] = (
+            metadata_score_value
+        )
+
         info["final_score"] = (
             keyword_score +
-            filename_score
+            filename_score +
+            metadata_score_value
         )
 
         info["is_relevant"] = not (
@@ -214,10 +230,15 @@ def search_files(
                     "final_score"
                 ],
 
+                "metadata_score": info[
+                    "metadata_score"
+                ],
+
                 "preview": info[
                     "preview"
                 ][:250]
             }
         )
 
+    print(collection.count())
     return results_list

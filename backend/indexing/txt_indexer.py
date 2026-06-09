@@ -2,10 +2,11 @@ from backend.services.txt_service import extract_text_from_txt
 from backend.services.chunking_service import chunk_text
 from backend.services.embedding_service import generate_embeddings
 from backend.services.chroma_service import collection
-from backend.services.metadata_service import ( extract_keywords )
-
+from backend.services.metadata_service import ( extract_keywords , build_topics, generate_summary )
+import time
 
 def index_txt(txt_path, filename):
+    start_time = time.time()
 
     text = extract_text_from_txt(txt_path)
 
@@ -21,6 +22,13 @@ def index_txt(txt_path, filename):
         return
 
     chunks = chunk_text(text)
+    topics = build_topics(
+        keywords
+    )
+
+    summary = generate_summary(
+        chunks
+    )
 
     embeddings = generate_embeddings(chunks)
 
@@ -51,9 +59,15 @@ def index_txt(txt_path, filename):
 
     print(f"Indexed: {filename}")
 
+    print(
+        f"{filename} indexed in "
+        f"{round(time.time() - start_time, 2)} sec"
+    )
     return {
         "chunks": len(chunks),
-        "keywords": keywords
+        "keywords": keywords,
+        "topics": topics,
+        "summary": summary
     }
 
 

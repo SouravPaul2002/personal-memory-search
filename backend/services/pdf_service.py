@@ -1,19 +1,23 @@
-from pypdf import PdfReader
+import fitz
+
 
 def extract_text_from_pdf(pdf_path):
+
     text = ""
 
     try:
-        reader = PdfReader(pdf_path)
 
-        for page in reader.pages:
-            page_text = page.extract_text()
+        doc = fitz.open(pdf_path)
 
-            if page_text:
-                text += page_text + "\n"
+        for page in doc:
+            text += page.get_text()
 
         return text
 
     except Exception as e:
-        print(f"Error reading PDF: {e}")
+
+        print(
+            f"Error reading PDF: {e}"
+        )
+
         return ""

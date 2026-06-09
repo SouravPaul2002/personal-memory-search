@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Query
 
-from backend.services.search_service import search_files
+from backend.services.fusion_search_service import (
+    fusion_search
+)
 
 router = APIRouter()
 
@@ -14,7 +16,7 @@ def search(
     )
 ):
 
-    results = search_files(
+    results = fusion_search(
         query=q,
         search_type=search_type
     )

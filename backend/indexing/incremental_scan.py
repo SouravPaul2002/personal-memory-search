@@ -36,6 +36,14 @@ from backend.indexing.pptx_indexer import (
     delete_pptx_chunks
 )
 
+from backend.indexing.job_queue import (
+    index_queue
+)
+
+from backend.indexing.worker import (
+    process_jobs
+)
+
 PDF_FOLDER = "data/pdfs"
 
 IMAGE_FOLDER = "data/images"
@@ -100,25 +108,38 @@ def run_incremental_scan():
             print(f"\nNEW PDF: {filename}")
             new_files +=1
 
-            result = index_pdf(
-                pdf_path=pdf_path,
-                filename=filename
+            # result = index_pdf(
+            #     pdf_path=pdf_path,
+            #     filename=filename
+            # )
+            index_queue.put(
+                {
+                    "type": "pdf",
+                    "action": "new",
+                    "pdf_path": pdf_path,
+                    "filename": filename,
+                    "created_time": created_time,
+                    "modified_time": modified_time,
+                    "mime_type": mime_type,
+                    "file_size": file_size,
+                    "file_hash": file_hash
+                }
             )
 
-            if result is None:
-                continue
+            # if result is None:
+            #     continue
 
-            registry[pdf_path] = {
-                "file_name": filename,
-                "file_type": "pdf",
-                "created_time": created_time,
-                "modified_time": modified_time,
-                "mime_type": mime_type,
-                "file_size": file_size,
-                "content_hash": file_hash,
-                "keywords": result["keywords"],
-                "last_indexed": datetime.now().isoformat()
-            }
+            # registry[pdf_path] = {
+            #     "file_name": filename,
+            #     "file_type": "pdf",
+            #     "created_time": created_time,
+            #     "modified_time": modified_time,
+            #     "mime_type": mime_type,
+            #     "file_size": file_size,
+            #     "content_hash": file_hash,
+            #     "keywords": result["keywords"],
+            #     "last_indexed": datetime.now().isoformat()
+            # }
 
         # MODIFIED FILE
         elif registry[pdf_path]["content_hash"] != file_hash:
@@ -126,19 +147,19 @@ def run_incremental_scan():
             print(f"\nMODIFIED PDF: {filename}")
             modified_files +=1
 
-            delete_pdf_chunks(filename)
+            # delete_pdf_chunks(filename)
 
-            result= index_pdf(
-                pdf_path=pdf_path,
-                filename=filename
-            )
+            # result= index_pdf(
+            #     pdf_path=pdf_path,
+            #     filename=filename
+            # )
 
-            registry[pdf_path]["modified_time"] = modified_time
-            registry[pdf_path]["mime_type"] = mime_type
-            registry[pdf_path]["file_size"] = file_size
-            registry[pdf_path]["content_hash"] = file_hash
-            registry[pdf_path]["last_indexed"] = datetime.now().isoformat()
-            registry[pdf_path]["keywords"] = result["keywords"]
+            # registry[pdf_path]["modified_time"] = modified_time
+            # registry[pdf_path]["mime_type"] = mime_type
+            # registry[pdf_path]["file_size"] = file_size
+            # registry[pdf_path]["content_hash"] = file_hash
+            # registry[pdf_path]["last_indexed"] = datetime.now().isoformat()
+            # registry[pdf_path]["keywords"] = result["keywords"]
 
     # incremental scan for Images
     for filename in os.listdir(IMAGE_FOLDER):
@@ -170,25 +191,38 @@ def run_incremental_scan():
             print(f"\nNEW IMAGE: {filename}")
             new_files +=1
 
-            result = index_image(
-                image_path=image_path,
-                filename=filename
+            # result = index_image(
+            #     image_path=image_path,
+            #     filename=filename
+            # )
+
+            # if result is None:
+            #     continue
+
+            # registry[image_path] = {
+            #     "file_name": filename,
+            #     "file_type": "image",
+            #     "created_time": created_time,
+            #     "modified_time": modified_time,
+            #     "mime_type": mime_type,
+            #     "file_size": file_size,
+            #     "content_hash": file_hash,
+            #     "keywords": result["keywords"],
+            #     "last_indexed": datetime.now().isoformat()
+            # }
+            index_queue.put(
+                {
+                    "type": "image",
+                    "action": "new",
+                    "image_path": image_path,
+                    "filename": filename,
+                    "created_time": created_time,
+                    "modified_time": modified_time, 
+                    "mime_type": mime_type,
+                    "file_size": file_size,
+                    "file_hash": file_hash
+                }
             )
-
-            if result is None:
-                continue
-
-            registry[image_path] = {
-                "file_name": filename,
-                "file_type": "image",
-                "created_time": created_time,
-                "modified_time": modified_time,
-                "mime_type": mime_type,
-                "file_size": file_size,
-                "content_hash": file_hash,
-                "keywords": result["keywords"],
-                "last_indexed": datetime.now().isoformat()
-            }
 
         # MODIFIED FILE
         elif registry[image_path]["content_hash"] != file_hash:
@@ -257,6 +291,8 @@ def run_incremental_scan():
                 "file_size": file_size,
                 "content_hash": file_hash,
                 "keywords": result["keywords"],
+                "topics": result["topics"],
+                "summary": result["summary"],
                 "last_indexed": datetime.now().isoformat()
             }
 
@@ -327,6 +363,8 @@ def run_incremental_scan():
                 "file_size": file_size,
                 "content_hash": file_hash,
                 "keywords": result["keywords"],
+                "topics": result["topics"],
+                "summary": result["summary"],
                 "last_indexed": datetime.now().isoformat()
             }
 
@@ -398,6 +436,8 @@ def run_incremental_scan():
                 "file_size": file_size,
                 "content_hash": file_hash,
                 "keywords": result["keywords"],
+                "topics": result["topics"],
+                "summary": result["summary"],
                 "last_indexed": datetime.now().isoformat()
             }
 
@@ -459,6 +499,32 @@ def run_incremental_scan():
 
         del registry[deleted_file]
 
+    print(
+        f"Jobs queued: "
+        f"{index_queue.qsize()}"
+    )
+    completed_jobs = process_jobs()
+    for job in completed_jobs:
+
+        if job["type"] == "pdf":
+            path = job["pdf_path"]
+
+        elif job["type"] == "image":
+            path = job["image_path"]
+
+        registry[path] = {
+        "file_name": job["filename"],
+        "file_type": job["type"],
+        "created_time": job["created_time"],
+        "modified_time": job["modified_time"],
+        "mime_type": job["mime_type"],
+        "file_size": job["file_size"],
+        "content_hash": job["file_hash"],
+        "keywords": job["result"].get("keywords", []),
+        "topics": job["result"].get("topics", []),
+        "summary": job["result"].get("summary", ""),
+        "last_indexed": datetime.now().isoformat()
+    }
     save_registry(registry)
 
     print("\nIncremental Scan Complete")

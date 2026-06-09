@@ -10,25 +10,59 @@ from backend.services.query_intent_service import (
     detect_query_intent
 )
 
+from backend.services.query_rewriter_service import (
+    rewrite_query
+)
+
 
 def fusion_search(
     query,
     search_type="all"
 ):
 
-    intent = detect_query_intent(
-        query
+    rewritten = rewrite_query(query)
+
+    intent = detect_query_intent(query)
+
+    search_query = " ".join(
+        rewritten["keywords"]
     )
 
+    if not search_query:
+        search_query = query
+
+    if rewritten["search_type"] != "all":
+        search_type = rewritten["search_type"]
+
+    print("\nRewrite:")
+    print(rewritten)
+
+    print(f"Original Query: {query}")
+    print(f"Search Query: {search_query}")
+    print(f"Search Type: {search_type}")
+
+    # text_results = search_files(
+    #     query=query,
+    #     search_type=search_type
+    # )
+
+    # clip_results = search_images_clip(
+    #     query=query,
+    #     limit=10
+    # )
+
     text_results = search_files(
-        query=query,
+        query=search_query,
         search_type=search_type
     )
 
     clip_results = search_images_clip(
-        query=query,
+        query=search_query,
         limit=10
     )
+
+    print(f"Original Query: {query}")
+    print(f"Search Query: {search_query}")
 
     # Intent-based weighting
     if intent == "image":
