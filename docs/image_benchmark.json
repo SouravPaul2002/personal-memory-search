@@ -1,0 +1,78 @@
+[
+    {
+        "query": "red pen",
+        "expected": "red-ballpoint-pen.jpeg"
+    },
+    {
+        "query": "red ballpoint pen",
+        "expected": "red-ballpoint-pen.jpeg"
+    },
+    {
+        "query": "writing pen",
+        "expected": "red-ballpoint-pen.jpeg"
+    },
+    {
+        "query": "stationery item",
+        "expected": "red-ballpoint-pen.jpeg"
+    },
+    {
+        "query": "pen photo",
+        "expected": "red-ballpoint-pen.jpeg"
+    },
+    {
+        "query": "python code screenshot",
+        "expected": "test.jpeg"
+    },
+    {
+        "query": "python script image",
+        "expected": "test.jpeg"
+    },
+    {
+        "query": "programming screenshot",
+        "expected": "test.jpeg"
+    },
+    {
+        "query": "coding image",
+        "expected": "test.jpeg"
+    },
+    {
+        "query": "python program picture",
+        "expected": "test.jpeg"
+    },
+    {
+        "query": "junk food image",
+        "expected": "WhatsApp Image 2026-06-06 at 10.56.30 (1).jpeg"
+    },
+    {
+        "query": "Ice creame picture",
+        "expected": "WhatsApp Image 2026-06-06 at 10.56.30 (1).jpeg"
+    },
+    {
+        "query": "burger picture",
+        "expected": "WhatsApp Image 2026-06-06 at 10.56.30 (1).jpeg"
+    },
+    {
+        "query": "cold drinks picture",
+        "expected": "WhatsApp Image 2026-06-06 at 10.56.30 (1).jpeg"
+    },
+    {
+        "query": "mobile recharge plans",
+        "expected": "WhatsApp Image 2026-06-06 at 10.56.30 (2).jpeg"
+    },
+    {
+        "query": "Jio recharges",
+        "expected": "WhatsApp Image 2026-06-06 at 10.56.30 (2).jpeg"
+    },
+    {
+        "query": "a roboat picture",
+        "expected": "WhatsApp Image 2026-06-06 at 10.56.31 (2).jpeg"
+    },
+    {
+        "query": "Time schedule image",
+        "expected": "WhatsApp Image 2026-06-06 at 10.56.30 (2).jpeg"
+    },
+    {
+        "query": "Time schedule with a robot image",
+        "expected": "WhatsApp Image 2026-06-06 at 10.56.30 (2).jpeg"
+    }
+]

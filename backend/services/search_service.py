@@ -184,6 +184,20 @@ def search_files(
 
                 continue
 
+        matched_by = []
+
+        if info["distance"] < 1.5:
+            matched_by.append("embedding")
+
+        if info["keyword_score"] > 0:
+            matched_by.append("keyword")
+
+        if info["filename_score"] > 0:
+            matched_by.append("filename")
+
+        if info["metadata_score"] > 0:
+            matched_by.append("metadata")
+
         results_list.append(
             {
                 "file_name": file_name,
@@ -233,6 +247,8 @@ def search_files(
                 "metadata_score": info[
                     "metadata_score"
                 ],
+
+                "matched_by": matched_by,
 
                 "preview": info[
                     "preview"

@@ -10,3 +10,4 @@ fastapi
 uvicorn
 open_clip_torch
 pymupdf
+pyspellchecker
