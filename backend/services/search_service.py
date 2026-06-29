@@ -77,18 +77,22 @@ def search_files(
 
     for file_name, info in best_files.items():
 
-        keyword_score = 0
+        registry_data = {}
 
         for path, data in registry.items():
 
             if data["file_name"] == file_name:
 
-                keyword_score = keyword_match_score(
-                    query,
-                    data.get("keywords", [])
-                )
-
+                registry_data = data
                 break
+
+        keyword_score = keyword_match_score(
+            query,
+            registry_data.get(
+                "keywords",
+                []
+            )
+        )
 
         filename_score = filename_match_score(
             query,
@@ -97,11 +101,18 @@ def search_files(
 
         metadata_score_value = metadata_score(
             query=query,
-            topics=data.get("topics", []),
-            summary=data.get("summary", "")
+            topics=registry_data.get(
+                "topics",
+                []
+            ),
+            summary=registry_data.get(
+                "summary",
+                ""
+            )
         )
 
         info["keyword_score"] = keyword_score
+
         info["filename_score"] = filename_score
 
         info["metadata_score"] = (
@@ -159,20 +170,20 @@ def search_files(
         )
 
         #date formatting
-        modified_time = datetime.fromtimestamp(
-            registry_data["modified_time"]
-        ).strftime("%Y-%m-%d %H:%M:%S")
+        modified_timestamp = registry_data.get(
+            "modified_time"
+        )
 
-        registry_data = {}
+        if modified_timestamp:
 
-        for path, data in registry.items():
+            modified_time = datetime.fromtimestamp(
+                modified_timestamp
+            ).strftime("%Y-%m-%d %H:%M:%S")
 
-            if data["file_name"] == file_name:
+        else:
 
-                registry_data = data
+            modified_time = "Unknown"
 
-                break
-        
         if time_filter:
 
             created_time = registry_data.get(
@@ -230,6 +241,10 @@ def search_files(
                 "distance": round(
                     info["distance"],
                     4
+                ),
+
+                "original_uri": registry_data.get(
+                    "original_uri"
                 ),
 
                 "keyword_score": info[

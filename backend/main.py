@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from backend.api.status import router as status_router
 from backend.api.search import router as search_router
 from backend.api.scan import router as scan_router
+from backend.api.upload import router as upload_router
 
 app = FastAPI(
     title="Personal Memory Search Engine"
@@ -17,3 +18,4 @@ def root():
 app.include_router(status_router)
 app.include_router(search_router)
 app.include_router(scan_router)
+app.include_router(upload_router)

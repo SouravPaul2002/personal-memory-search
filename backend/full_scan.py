@@ -7,15 +7,16 @@ from backend.indexing.file_registry import (
 )
 
 from backend.services.chroma_service import (
-    collection
+    collection,
+    clip_collection
 )
 
 def run_full_scan():
 
-    all_ids = collection.get()["ids"]
-
-    if all_ids:
-        collection.delete(ids=all_ids)
+    for col in [collection, clip_collection]:
+        all_ids = col.get()["ids"]
+        if all_ids:
+            col.delete(ids=all_ids)
 
     save_registry({})
 

@@ -14,6 +14,10 @@ from backend.services.query_rewriter_service import (
     rewrite_query
 )
 
+from backend.indexing.file_registry import (
+    load_registry
+)
+
 
 def fusion_search(
     query,
@@ -98,6 +102,9 @@ def fusion_search(
 
         merged.append(result)
 
+    # Load registry once to enrich CLIP results with original_uri
+    registry = load_registry()
+
     # CLIP results
     for result in clip_results:
 
@@ -108,12 +115,22 @@ def fusion_search(
 
         seen_paths.add(path)
 
+        registry_data = registry.get(path, {})
+
         merged.append(
             {
                 "file_name": result["file_name"],
+                "file_type": registry_data.get("file_type"),
                 "path": path,
                 "source": "clip",
-                "distance": result["distance"]
+                "distance": result["distance"],
+                "original_uri": registry_data.get("original_uri"),
+                "file_size": round(
+                    registry_data.get("file_size", 0) / (1024 * 1024),
+                    2
+                ),
+                "modified_time": registry_data.get("modified_time"),
+                "preview": registry_data.get("summary", "")[:250]
             }
         )
 

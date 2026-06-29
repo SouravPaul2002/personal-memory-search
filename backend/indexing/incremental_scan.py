@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime
 
@@ -44,6 +45,25 @@ from backend.indexing.worker import (
     process_jobs
 )
 
+def load_upload_metadata():
+
+    metadata_file = (
+        "data/upload_metadata.json"
+    )
+
+    if not os.path.exists(
+        metadata_file
+    ):
+        return {}
+
+    with open(
+        metadata_file,
+        "r",
+        encoding="utf-8"
+    ) as f:
+
+        return json.load(f)
+
 PDF_FOLDER = "data/pdfs"
 
 IMAGE_FOLDER = "data/images"
@@ -58,12 +78,12 @@ TXT_FOLDER = "data/txts"
 
 DOCX_FOLDER = "data/docx"
 DOCX_EXTENSIONS = (
-    ".docx"
+    ".docx",
 )
 
 PPTX_FOLDER = "data/pptx"
 PPTX_EXTENSIONS = (
-    ".pptx"
+    ".pptx",
 )
 
 os.makedirs(PDF_FOLDER, exist_ok=True)
@@ -232,10 +252,13 @@ def run_incremental_scan():
 
             delete_image_chunks(filename)
 
-            result= index_image(
+            result = index_image(
                 image_path=image_path,
                 filename=filename
             )
+
+            if result is None:
+                continue
 
             registry[image_path]["modified_time"] = modified_time
             registry[image_path]["mime_type"] = mime_type
@@ -503,6 +526,10 @@ def run_incremental_scan():
         f"Jobs queued: "
         f"{index_queue.qsize()}"
     )
+
+    upload_metadata = (
+        load_upload_metadata()
+    )
     completed_jobs = process_jobs()
     for job in completed_jobs:
 
@@ -512,19 +539,41 @@ def run_incremental_scan():
         elif job["type"] == "image":
             path = job["image_path"]
 
+        original_uri = (
+            upload_metadata.get(
+                job["filename"],
+                {}
+            ).get(
+                "original_uri"
+            )
+        )
+
         registry[path] = {
-        "file_name": job["filename"],
-        "file_type": job["type"],
-        "created_time": job["created_time"],
-        "modified_time": job["modified_time"],
-        "mime_type": job["mime_type"],
-        "file_size": job["file_size"],
-        "content_hash": job["file_hash"],
-        "keywords": job["result"].get("keywords", []),
-        "topics": job["result"].get("topics", []),
-        "summary": job["result"].get("summary", ""),
-        "last_indexed": datetime.now().isoformat()
-    }
+            "file_name": job["filename"],
+            "file_type": job["type"],
+            "created_time": job["created_time"],
+            "modified_time": job["modified_time"],
+            "mime_type": job["mime_type"],
+            "file_size": job["file_size"],
+            "content_hash": job["file_hash"],
+            "keywords": job["result"].get("keywords", []),
+            "topics": job["result"].get("topics", []),
+            "summary": job["result"].get("summary", ""),
+            "original_uri": original_uri,
+            "last_indexed": datetime.now().isoformat()
+        }
+    # Backfill original_uri for already-indexed entries that still have null.
+    # These files are skipped by the new/modified checks above because their
+    # content hash hasn't changed, so we patch them here from upload_metadata.
+    for path, entry in registry.items():
+        if entry.get("original_uri") is None:
+            filename = entry.get("file_name")
+            if filename and filename in upload_metadata:
+                uri = upload_metadata[filename].get("original_uri")
+                if uri:
+                    entry["original_uri"] = uri
+                    print(f"Backfilled original_uri for: {filename}")
+
     save_registry(registry)
 
     print("\nIncremental Scan Complete")

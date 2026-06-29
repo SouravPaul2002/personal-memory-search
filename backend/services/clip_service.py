@@ -1,4 +1,6 @@
+# pyrefly: ignore [missing-import]
 import open_clip
+# pyrefly: ignore [missing-import]
 import torch
 
 from PIL import Image

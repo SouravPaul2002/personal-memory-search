@@ -57,4 +57,4 @@ def detect_query_intent(query):
     if text_score > 0:
         return "text"
 
-    return "text"
+    return "hybrid"

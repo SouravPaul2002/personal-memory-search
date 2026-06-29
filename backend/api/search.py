@@ -22,8 +22,9 @@ def search(
     )
 
     return {
-        "query": q,
-        "search_type": search_type,
-        "count": len(results),
-        "results": results
+        "results": results,
+        "total": len(results),
+        "rewritten_query": q,
+        "intent": search_type,
+        "query_time_ms": 0
     }

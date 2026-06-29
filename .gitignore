@@ -1,24 +1,41 @@
-# Python
+# Python / Pycache
 __pycache__/
 *.pyc
+**/*.pyc
+**/__pycache__/
 
 # Virtual Environment
 venv/
 .env
 
-# ChromaDB
+# ChromaDB & Database collections
 chroma_db/
+**/chroma_db/
 
 # Logs
 logs/
+*.log
 
-# Temporary Files
-data/temp/
+# Application Uploads & local data (Registry JSON, scan status, raw documents)
+data/
+backend/data/
+**/data/
 
-# IDE
+# IDE / System files
 .vscode/
 .idea/
-
-# OS
 .DS_Store
 Thumbs.db
+
+# Node modules (for React Native/frontend)
+node_modules/
+**/node_modules/
+
+# Android build outputs & caches
+.gradle/
+**/android/app/build/
+**/android/.gradle/
+**/android/build/
+**/.cxx/
+build/
+bin/
