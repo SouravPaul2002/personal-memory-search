@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from backend.database.schema import initialize_database
 from backend.api.status import router as status_router
 from backend.api.search import router as search_router
 from backend.api.scan import router as scan_router
@@ -9,6 +10,7 @@ app = FastAPI(
     title="Personal Memory Search Engine"
 )
 
+initialize_database()
 @app.get("/")
 def root():
     return {

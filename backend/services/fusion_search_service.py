@@ -15,7 +15,7 @@ from backend.services.query_rewriter_service import (
 )
 
 from backend.indexing.file_registry import (
-    load_registry
+    get_file
 )
 
 
@@ -102,9 +102,6 @@ def fusion_search(
 
         merged.append(result)
 
-    # Load registry once to enrich CLIP results with original_uri
-    registry = load_registry()
-
     # CLIP results
     for result in clip_results:
 
@@ -115,7 +112,8 @@ def fusion_search(
 
         seen_paths.add(path)
 
-        registry_data = registry.get(path, {})
+        row = get_file(path)
+        registry_data = dict(row) if row else {}
 
         merged.append(
             {

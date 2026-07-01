@@ -3,7 +3,7 @@ from backend.indexing.incremental_scan import (
 )
 
 from backend.indexing.file_registry import (
-    save_registry
+    clear_all_files
 )
 
 from backend.services.chroma_service import (
@@ -18,7 +18,7 @@ def run_full_scan():
         if all_ids:
             col.delete(ids=all_ids)
 
-    save_registry({})
+    clear_all_files()
 
     result = run_incremental_scan()
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from backend.indexing.file_registry import load_registry
+from backend.database.database import get_connection
 
 from backend.services.chroma_service import (
     collection
@@ -15,39 +15,41 @@ router = APIRouter()
 @router.get("/status")
 def status():
 
-    registry = load_registry()
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    # Query file counts grouped by file_type
+    cursor.execute(
+        """
+        SELECT file_type, COUNT(*) as count
+        FROM files
+        WHERE is_deleted = 0
+        GROUP BY file_type
+        """
+    )
+    rows = cursor.fetchall()
+    
+    # Total active files
+    cursor.execute(
+        """
+        SELECT COUNT(*)
+        FROM files
+        WHERE is_deleted = 0
+        """
+    )
+    total_files = cursor.fetchone()[0]
+    conn.close()
+
+    counts = {row["file_type"]: row["count"] for row in rows}
+    
+    pdfs = counts.get("pdf", 0)
+    images = counts.get("image", 0)
+    txts = counts.get("txt", 0)
+    docxs = counts.get("docx", 0)
+    pptxs = counts.get("pptx", 0)
+
     chroma_documents = collection.count()
     scan_status = load_scan_status()
-
-    total_files = len(registry)
-
-    pdfs = 0
-    images = 0
-    txts = 0
-    docxs = 0
-    pptxs = 0
-
-    for data in registry.values():
-
-        file_type = data.get(
-            "file_type",
-            ""
-        )
-
-        if file_type == "pdf":
-            pdfs += 1
-
-        elif file_type == "image":
-            images += 1
-
-        elif file_type == "txt":
-            txts += 1
-
-        elif file_type == "docx":
-            docxs += 1
-
-        elif file_type == "pptx":
-            pptxs += 1
 
     return {
         "status": "running",

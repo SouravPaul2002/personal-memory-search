@@ -75,47 +75,9 @@ async def upload_file(
         content = await file.read()
         f.write(content)
 
-    # --- Write to upload_metadata.json (used by incremental scan for new files) ---
-    metadata_file = (
-        "data/upload_metadata.json"
-    )
-
-    if os.path.exists(metadata_file):
-
-        try:
-
-            with open(
-                metadata_file,
-                "r",
-                encoding="utf-8"
-            ) as f:
-
-                metadata = json.load(f)
-
-        except Exception:
-
-            metadata = {}
-
-    else:
-
-        metadata = {}
-
-
-    metadata[file.filename] = {
-        "original_uri": original_uri
-    }
-
-    with open(
-        metadata_file,
-        "w",
-        encoding="utf-8"
-    ) as f:
-
-        json.dump(
-            metadata,
-            f,
-            indent=4
-        )
+    # --- Write upload metadata to SQLite database ---
+    from backend.indexing.file_registry import save_upload_metadata
+    save_upload_metadata(file.filename, original_uri)
 
     # run_incremental_scan()
 

@@ -1,6 +1,7 @@
+import json
 from backend.services.embedding_service import generate_embedding
 from backend.services.chroma_service import collection
-from backend.indexing.file_registry import load_registry
+from backend.indexing.file_registry import get_file
 from backend.services.hybrid_service import keyword_match_score
 from backend.services.metadata_ranking import metadata_score
 from backend.services.ranking_service import filename_match_score
@@ -9,16 +10,31 @@ from backend.services.date_query_service import (
     extract_time_filter
 )
 
+def get_file_metadata(file_uri):
+    row = get_file(file_uri)
+    if not row:
+        return {}
+    
+    try:
+        keywords = json.loads(row["keywords"]) if row["keywords"] else []
+    except Exception:
+        keywords = []
+        
+    try:
+        topics = json.loads(row["topics"]) if row["topics"] else []
+    except Exception:
+        topics = []
+        
+    data = dict(row)
+    data["keywords"] = keywords
+    data["topics"] = topics
+    return data
+
 
 def search_files(
     query,
     search_type="all"
 ):
-    registry = load_registry()
-    print(
-        "Loaded Registry:",
-        len(registry)
-    )
     time_filter = extract_time_filter(
         query
     )
@@ -77,14 +93,7 @@ def search_files(
 
     for file_name, info in best_files.items():
 
-        registry_data = {}
-
-        for path, data in registry.items():
-
-            if data["file_name"] == file_name:
-
-                registry_data = data
-                break
+        registry_data = get_file_metadata(info["path"])
 
         keyword_score = keyword_match_score(
             query,
@@ -149,16 +158,8 @@ def search_files(
 
     for file_name, info in sorted_results[:10]:
 
-        #retrieve registy data
-        registry_data = {}
-
-        for path, data in registry.items():
-
-            if data["file_name"] == file_name:
-
-                registry_data = data
-
-                break
+        #retrieve registry data
+        registry_data = get_file_metadata(info["path"])
 
         # file size in mb
         file_size_mb = round(

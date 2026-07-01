@@ -1,10 +1,15 @@
 import json
 import os
 from datetime import datetime
+import time
 
 from backend.indexing.file_registry import (
-    load_registry,
-    save_registry
+    get_all_files,
+    get_file,
+    insert_file,
+    update_file,
+    mark_deleted,
+    get_upload_metadata
 )
 
 from backend.services.file_metadata_service import get_mime_type
@@ -46,23 +51,7 @@ from backend.indexing.worker import (
 )
 
 def load_upload_metadata():
-
-    metadata_file = (
-        "data/upload_metadata.json"
-    )
-
-    if not os.path.exists(
-        metadata_file
-    ):
-        return {}
-
-    with open(
-        metadata_file,
-        "r",
-        encoding="utf-8"
-    ) as f:
-
-        return json.load(f)
+    return get_upload_metadata()
 
 PDF_FOLDER = "data/pdfs"
 
@@ -96,11 +85,14 @@ def run_incremental_scan():
     new_files = 0
     modified_files = 0
     deleted_files = 0
-    registry = load_registry()
+    
+    # Load all active files from the SQLite database
+    db_files = get_all_files()
+    registry = {row["file_uri"]: row for row in db_files}
 
     current_files = set()
 
-    #incremental scan for PDFS
+    # incremental scan for PDFS
     for filename in os.listdir(PDF_FOLDER):
 
         if not filename.lower().endswith(".pdf"):
@@ -126,12 +118,8 @@ def run_incremental_scan():
         if pdf_path not in registry:
 
             print(f"\nNEW PDF: {filename}")
-            new_files +=1
+            new_files += 1
 
-            # result = index_pdf(
-            #     pdf_path=pdf_path,
-            #     filename=filename
-            # )
             index_queue.put(
                 {
                     "type": "pdf",
@@ -146,40 +134,11 @@ def run_incremental_scan():
                 }
             )
 
-            # if result is None:
-            #     continue
-
-            # registry[pdf_path] = {
-            #     "file_name": filename,
-            #     "file_type": "pdf",
-            #     "created_time": created_time,
-            #     "modified_time": modified_time,
-            #     "mime_type": mime_type,
-            #     "file_size": file_size,
-            #     "content_hash": file_hash,
-            #     "keywords": result["keywords"],
-            #     "last_indexed": datetime.now().isoformat()
-            # }
-
         # MODIFIED FILE
         elif registry[pdf_path]["content_hash"] != file_hash:
 
             print(f"\nMODIFIED PDF: {filename}")
-            modified_files +=1
-
-            # delete_pdf_chunks(filename)
-
-            # result= index_pdf(
-            #     pdf_path=pdf_path,
-            #     filename=filename
-            # )
-
-            # registry[pdf_path]["modified_time"] = modified_time
-            # registry[pdf_path]["mime_type"] = mime_type
-            # registry[pdf_path]["file_size"] = file_size
-            # registry[pdf_path]["content_hash"] = file_hash
-            # registry[pdf_path]["last_indexed"] = datetime.now().isoformat()
-            # registry[pdf_path]["keywords"] = result["keywords"]
+            modified_files += 1
 
     # incremental scan for Images
     for filename in os.listdir(IMAGE_FOLDER):
@@ -209,27 +168,8 @@ def run_incremental_scan():
         if image_path not in registry:
 
             print(f"\nNEW IMAGE: {filename}")
-            new_files +=1
+            new_files += 1
 
-            # result = index_image(
-            #     image_path=image_path,
-            #     filename=filename
-            # )
-
-            # if result is None:
-            #     continue
-
-            # registry[image_path] = {
-            #     "file_name": filename,
-            #     "file_type": "image",
-            #     "created_time": created_time,
-            #     "modified_time": modified_time,
-            #     "mime_type": mime_type,
-            #     "file_size": file_size,
-            #     "content_hash": file_hash,
-            #     "keywords": result["keywords"],
-            #     "last_indexed": datetime.now().isoformat()
-            # }
             index_queue.put(
                 {
                     "type": "image",
@@ -248,7 +188,7 @@ def run_incremental_scan():
         elif registry[image_path]["content_hash"] != file_hash:
 
             print(f"\nMODIFIED IMAGE: {filename}")
-            modified_files +=1
+            modified_files += 1
 
             delete_image_chunks(filename)
 
@@ -260,14 +200,16 @@ def run_incremental_scan():
             if result is None:
                 continue
 
-            registry[image_path]["modified_time"] = modified_time
-            registry[image_path]["mime_type"] = mime_type
-            registry[image_path]["file_size"] = file_size
-            registry[image_path]["content_hash"] = file_hash
-            registry[image_path]["last_indexed"] = datetime.now().isoformat()
-            registry[image_path]["keywords"] = result["keywords"]
+            update_file(
+                file_uri=image_path,
+                modified_time=modified_time,
+                mime_type=mime_type,
+                file_size=file_size,
+                content_hash=file_hash,
+                keywords=result["keywords"]
+            )
 
-    #incremental scan for TXT
+    # incremental scan for TXT
     for filename in os.listdir(TXT_FOLDER):
 
         if not filename.lower().endswith(".txt"):
@@ -295,7 +237,7 @@ def run_incremental_scan():
         if txt_path not in registry:
 
             print(f"\nNEW TXT: {filename}")
-            new_files +=1
+            new_files += 1
 
             result = index_txt(
                 txt_path=txt_path,
@@ -305,41 +247,50 @@ def run_incremental_scan():
             if result is None:
                 continue
 
-            registry[txt_path] = {
-                "file_name": filename,
-                "file_type": "txt",
-                "created_time": created_time,
-                "modified_time": modified_time,
-                "mime_type": mime_type,
-                "file_size": file_size,
-                "content_hash": file_hash,
-                "keywords": result["keywords"],
-                "topics": result["topics"],
-                "summary": result["summary"],
-                "last_indexed": datetime.now().isoformat()
-            }
+            insert_file(
+                file_uri=txt_path,
+                original_uri=None,
+                file_name=filename,
+                file_type="txt",
+                mime_type=mime_type,
+                file_size=file_size,
+                created_time=created_time,
+                modified_time=modified_time,
+                last_access_time=time.time(),
+                content_hash=file_hash,
+                keywords=result["keywords"],
+                topics=result["topics"],
+                summary=result["summary"]
+            )
 
         # MODIFIED FILE
         elif registry[txt_path]["content_hash"] != file_hash:
 
             print(f"\nMODIFIED TXT: {filename}")
-            modified_files +=1
+            modified_files += 1
 
             delete_txt_chunks(filename)
 
-            result= index_txt(
+            result = index_txt(
                 txt_path=txt_path,
                 filename=filename
             )
 
-            registry[txt_path]["modified_time"] = modified_time
-            registry[txt_path]["mime_type"] = mime_type
-            registry[txt_path]["file_size"] = file_size
-            registry[txt_path]["content_hash"] = file_hash
-            registry[txt_path]["last_indexed"] = datetime.now().isoformat()
-            registry[txt_path]["keywords"] = result["keywords"]
+            if result is None:
+                continue
 
-    #incremental scan for DOCX
+            update_file(
+                file_uri=txt_path,
+                modified_time=modified_time,
+                mime_type=mime_type,
+                file_size=file_size,
+                content_hash=file_hash,
+                keywords=result["keywords"],
+                topics=result.get("topics", []),
+                summary=result.get("summary", "")
+            )
+
+    # incremental scan for DOCX
     for filename in os.listdir(DOCX_FOLDER):
 
         if not filename.lower().endswith(DOCX_EXTENSIONS):
@@ -367,7 +318,7 @@ def run_incremental_scan():
         if docx_path not in registry:
 
             print(f"\nNEW DOCX: {filename}")
-            new_files +=1
+            new_files += 1
 
             result = index_docx(
                 docx_path=docx_path,
@@ -377,42 +328,51 @@ def run_incremental_scan():
             if result is None:
                 continue
 
-            registry[docx_path] = {
-                "file_name": filename,
-                "file_type": "docx",
-                "created_time": created_time,
-                "modified_time": modified_time,
-                "mime_type": mime_type,
-                "file_size": file_size,
-                "content_hash": file_hash,
-                "keywords": result["keywords"],
-                "topics": result["topics"],
-                "summary": result["summary"],
-                "last_indexed": datetime.now().isoformat()
-            }
+            insert_file(
+                file_uri=docx_path,
+                original_uri=None,
+                file_name=filename,
+                file_type="docx",
+                mime_type=mime_type,
+                file_size=file_size,
+                created_time=created_time,
+                modified_time=modified_time,
+                last_access_time=time.time(),
+                content_hash=file_hash,
+                keywords=result["keywords"],
+                topics=result["topics"],
+                summary=result["summary"]
+            )
 
         # MODIFIED FILE
         elif registry[docx_path]["content_hash"] != file_hash:
 
             print(f"\nMODIFIED DOCX: {filename}")
-            modified_files +=1
+            modified_files += 1
 
             delete_docx_chunks(filename)
 
-            result= index_docx(
+            result = index_docx(
                 docx_path=docx_path,
                 filename=filename
             )
 
-            registry[docx_path]["modified_time"] = modified_time
-            registry[docx_path]["mime_type"] = mime_type
-            registry[docx_path]["file_size"] = file_size
-            registry[docx_path]["content_hash"] = file_hash
-            registry[docx_path]["last_indexed"] = datetime.now().isoformat()
-            registry[docx_path]["keywords"] = result["keywords"]
+            if result is None:
+                continue
+
+            update_file(
+                file_uri=docx_path,
+                modified_time=modified_time,
+                mime_type=mime_type,
+                file_size=file_size,
+                content_hash=file_hash,
+                keywords=result["keywords"],
+                topics=result.get("topics", []),
+                summary=result.get("summary", "")
+            )
 
 
-    #incremental scan for PPTX
+    # incremental scan for PPTX
     for filename in os.listdir(PPTX_FOLDER):
 
         if not filename.lower().endswith(PPTX_EXTENSIONS):
@@ -440,7 +400,7 @@ def run_incremental_scan():
         if pptx_path not in registry:
 
             print(f"\nNEW PPTX: {filename}")
-            new_files +=1
+            new_files += 1
 
             result = index_pptx(
                 pptx_path=pptx_path,
@@ -450,39 +410,48 @@ def run_incremental_scan():
             if result is None:
                 continue
 
-            registry[pptx_path] = {
-                "file_name": filename,
-                "file_type": "pptx",
-                "created_time": created_time,
-                "modified_time": modified_time,
-                "mime_type": mime_type,
-                "file_size": file_size,
-                "content_hash": file_hash,
-                "keywords": result["keywords"],
-                "topics": result["topics"],
-                "summary": result["summary"],
-                "last_indexed": datetime.now().isoformat()
-            }
+            insert_file(
+                file_uri=pptx_path,
+                original_uri=None,
+                file_name=filename,
+                file_type="pptx",
+                mime_type=mime_type,
+                file_size=file_size,
+                created_time=created_time,
+                modified_time=modified_time,
+                last_access_time=time.time(),
+                content_hash=file_hash,
+                keywords=result["keywords"],
+                topics=result["topics"],
+                summary=result["summary"]
+            )
 
         # MODIFIED FILE
         elif registry[pptx_path]["content_hash"] != file_hash:
 
             print(f"\nMODIFIED PPTX: {filename}")
-            modified_files +=1
+            modified_files += 1
 
             delete_pptx_chunks(filename)
 
-            result= index_pptx(
+            result = index_pptx(
                 pptx_path=pptx_path,
                 filename=filename
             )
 
-            registry[pptx_path]["modified_time"] = modified_time
-            registry[pptx_path]["mime_type"] = mime_type
-            registry[pptx_path]["file_size"] = file_size
-            registry[pptx_path]["content_hash"] = file_hash
-            registry[pptx_path]["last_indexed"] = datetime.now().isoformat()
-            registry[pptx_path]["keywords"] = result["keywords"]
+            if result is None:
+                continue
+
+            update_file(
+                file_uri=pptx_path,
+                modified_time=modified_time,
+                mime_type=mime_type,
+                file_size=file_size,
+                content_hash=file_hash,
+                keywords=result["keywords"],
+                topics=result.get("topics", []),
+                summary=result.get("summary", "")
+            )
 
 
     # DELETED FILES
@@ -520,7 +489,7 @@ def run_incremental_scan():
         elif file_type == "pptx":
             delete_pptx_chunks(filename)
 
-        del registry[deleted_file]
+        mark_deleted(deleted_file)
 
     print(
         f"Jobs queued: "
@@ -548,33 +517,31 @@ def run_incremental_scan():
             )
         )
 
-        registry[path] = {
-            "file_name": job["filename"],
-            "file_type": job["type"],
-            "created_time": job["created_time"],
-            "modified_time": job["modified_time"],
-            "mime_type": job["mime_type"],
-            "file_size": job["file_size"],
-            "content_hash": job["file_hash"],
-            "keywords": job["result"].get("keywords", []),
-            "topics": job["result"].get("topics", []),
-            "summary": job["result"].get("summary", ""),
-            "original_uri": original_uri,
-            "last_indexed": datetime.now().isoformat()
-        }
+        insert_file(
+            file_uri=path,
+            original_uri=original_uri,
+            file_name=job["filename"],
+            file_type=job["type"],
+            mime_type=job["mime_type"],
+            file_size=job["file_size"],
+            created_time=job["created_time"],
+            modified_time=job["modified_time"],
+            last_access_time=time.time(),
+            content_hash=job["file_hash"],
+            keywords=job["result"].get("keywords", []),
+            topics=job["result"].get("topics", []),
+            summary=job["result"].get("summary", "")
+        )
+
     # Backfill original_uri for already-indexed entries that still have null.
-    # These files are skipped by the new/modified checks above because their
-    # content hash hasn't changed, so we patch them here from upload_metadata.
-    for path, entry in registry.items():
-        if entry.get("original_uri") is None:
-            filename = entry.get("file_name")
+    for path, row in registry.items():
+        if row["original_uri"] is None:
+            filename = row["file_name"]
             if filename and filename in upload_metadata:
                 uri = upload_metadata[filename].get("original_uri")
                 if uri:
-                    entry["original_uri"] = uri
+                    update_file(file_uri=path, original_uri=uri)
                     print(f"Backfilled original_uri for: {filename}")
-
-    save_registry(registry)
 
     print("\nIncremental Scan Complete")
     return {
@@ -582,6 +549,7 @@ def run_incremental_scan():
         "modified_files": modified_files,
         "deleted_files": deleted_files
     }
+
 if __name__ == "__main__":
 
     result = run_incremental_scan()
