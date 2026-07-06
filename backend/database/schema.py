@@ -81,6 +81,14 @@ ON files(is_deleted);
 ]
 
 
+CREATE_SCAN_STATUS_TABLE_SQL = """
+CREATE TABLE IF NOT EXISTS scan_status (
+    id              INTEGER PRIMARY KEY DEFAULT 1,
+    last_scan_time  TEXT,
+    last_scan_type  TEXT
+);
+"""
+
 def initialize_database():
 
     conn = get_connection()
@@ -89,6 +97,7 @@ def initialize_database():
 
     cursor.execute(CREATE_TABLE_SQL)
     cursor.execute(CREATE_UPLOADS_TABLE_SQL)
+    cursor.execute(CREATE_SCAN_STATUS_TABLE_SQL)
 
     for index in INDEXES:
         cursor.execute(index)

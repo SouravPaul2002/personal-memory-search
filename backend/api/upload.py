@@ -3,6 +3,9 @@
 from fastapi import APIRouter, UploadFile, File,  Form
 import os
 import json
+from pathlib import Path
+
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent  # project root
 
 from backend.indexing.incremental_scan import run_incremental_scan
 
@@ -13,23 +16,23 @@ def get_save_folder(filename: str):
     ext = filename.lower().split(".")[-1]
 
     if ext == "pdf":
-        return "data/pdfs"
+        return str(_PROJECT_ROOT / "data" / "pdfs")
 
     elif ext in ["jpg", "jpeg", "png", "webp"]:
-        return "data/images"
+        return str(_PROJECT_ROOT / "data" / "images")
 
     elif ext == "txt":
-        return "data/txts"
+        return str(_PROJECT_ROOT / "data" / "txts")
 
     elif ext == "docx":
-        return "data/docx"
+        return str(_PROJECT_ROOT / "data" / "docx")
 
     elif ext == "pptx":
-        return "data/pptx"
+        return str(_PROJECT_ROOT / "data" / "pptx")
 
     return None
 
-UPLOAD_DIR = "data/pdfs"
+UPLOAD_DIR = str(_PROJECT_ROOT / "data" / "pdfs")
 
 os.makedirs(
     UPLOAD_DIR,

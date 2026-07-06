@@ -18,13 +18,8 @@ def incremental_scan():
     result = run_incremental_scan()
 
     save_scan_status(
-        {
-            "last_scan_time":
-                datetime.now().isoformat(),
-
-            "last_scan_type":
-                "incremental"
-        }
+        last_scan_time=datetime.now().isoformat(),
+        last_scan_type="incremental"
     )
 
     return {
@@ -41,13 +36,8 @@ def full_scan():
     result = run_full_scan()
 
     save_scan_status(
-        {
-            "last_scan_time":
-                datetime.now().isoformat(),
-
-            "last_scan_type":
-                "full"
-        }
+        last_scan_time=datetime.now().isoformat(),
+        last_scan_type="full"
     )
 
     return {

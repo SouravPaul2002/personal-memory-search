@@ -1,7 +1,11 @@
 import sqlite3
 from pathlib import Path
 
-DB_PATH = Path("backend/database/files.db")
+# Absolute path anchored to this file's location — never depends on CWD
+_HERE = Path(__file__).resolve().parent          # backend/database/
+_PROJECT_ROOT = _HERE.parent.parent              # project root
+
+DB_PATH = _PROJECT_ROOT / "backend" / "database" / "files.db"
 
 
 def get_connection() -> sqlite3.Connection:

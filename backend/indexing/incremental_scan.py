@@ -1,7 +1,10 @@
 import json
 import os
 from datetime import datetime
+from pathlib import Path
 import time
+
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent  # project root
 
 from backend.indexing.file_registry import (
     get_all_files,
@@ -53,9 +56,12 @@ from backend.indexing.worker import (
 def load_upload_metadata():
     return get_upload_metadata()
 
-PDF_FOLDER = "data/pdfs"
+PDF_FOLDER   = str(_PROJECT_ROOT / "data" / "pdfs")
+IMAGE_FOLDER = str(_PROJECT_ROOT / "data" / "images")
+TXT_FOLDER   = str(_PROJECT_ROOT / "data" / "txts")
+DOCX_FOLDER  = str(_PROJECT_ROOT / "data" / "docx")
+PPTX_FOLDER  = str(_PROJECT_ROOT / "data" / "pptx")
 
-IMAGE_FOLDER = "data/images"
 IMAGE_EXTENSIONS = (
     ".jpg",
     ".jpeg",
@@ -63,14 +69,10 @@ IMAGE_EXTENSIONS = (
     ".webp"
 )
 
-TXT_FOLDER = "data/txts"
-
-DOCX_FOLDER = "data/docx"
 DOCX_EXTENSIONS = (
     ".docx",
 )
 
-PPTX_FOLDER = "data/pptx"
 PPTX_EXTENSIONS = (
     ".pptx",
 )
@@ -140,6 +142,27 @@ def run_incremental_scan():
             print(f"\nMODIFIED PDF: {filename}")
             modified_files += 1
 
+            delete_pdf_chunks(filename)
+
+            result = index_pdf(
+                pdf_path=pdf_path,
+                filename=filename
+            )
+
+            if result is None:
+                continue
+
+            update_file(
+                file_uri=pdf_path,
+                modified_time=modified_time,
+                mime_type=mime_type,
+                file_size=file_size,
+                content_hash=file_hash,
+                keywords=result["keywords"],
+                topics=result.get("topics", []),
+                summary=result.get("summary", "")
+            )
+
     # incremental scan for Images
     for filename in os.listdir(IMAGE_FOLDER):
 
@@ -206,7 +229,9 @@ def run_incremental_scan():
                 mime_type=mime_type,
                 file_size=file_size,
                 content_hash=file_hash,
-                keywords=result["keywords"]
+                keywords=result["keywords"],
+                topics=result.get("topics", []),
+                summary=result.get("summary", "")
             )
 
     # incremental scan for TXT
