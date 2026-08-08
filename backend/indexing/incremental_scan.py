@@ -264,12 +264,15 @@ def run_incremental_scan():
             print(f"\nNEW TXT: {filename}")
             new_files += 1
 
-            result = index_txt(
-                txt_path=txt_path,
-                filename=filename
-            )
-
-            if result is None:
+            try:
+                result = index_txt(
+                    txt_path=txt_path,
+                    filename=filename
+                )
+                if result is None:
+                    continue
+            except Exception as e:
+                print(f"Skipping {txt_path}: {e}")
                 continue
 
             insert_file(
@@ -296,12 +299,15 @@ def run_incremental_scan():
 
             delete_txt_chunks(filename)
 
-            result = index_txt(
-                txt_path=txt_path,
-                filename=filename
-            )
-
-            if result is None:
+            try:
+                result = index_txt(
+                    txt_path=txt_path,
+                    filename=filename
+                )
+                if result is None:
+                    continue
+            except Exception as e:
+                print(f"Skipping {txt_path}: {e}")
                 continue
 
             update_file(
@@ -345,12 +351,15 @@ def run_incremental_scan():
             print(f"\nNEW DOCX: {filename}")
             new_files += 1
 
-            result = index_docx(
-                docx_path=docx_path,
-                filename=filename
-            )
-
-            if result is None:
+            try:
+                result = index_docx(
+                    docx_path=docx_path,
+                    filename=filename
+                )
+                if result is None:
+                    continue
+            except Exception as e:
+                print(f"Skipping {docx_path}: {e}")
                 continue
 
             insert_file(
@@ -377,12 +386,15 @@ def run_incremental_scan():
 
             delete_docx_chunks(filename)
 
-            result = index_docx(
-                docx_path=docx_path,
-                filename=filename
-            )
-
-            if result is None:
+            try:
+                result = index_docx(
+                    docx_path=docx_path,
+                    filename=filename
+                )
+                if result is None:
+                    continue
+            except Exception as e:
+                print(f"Skipping {docx_path}: {e}")
                 continue
 
             update_file(
@@ -427,12 +439,15 @@ def run_incremental_scan():
             print(f"\nNEW PPTX: {filename}")
             new_files += 1
 
-            result = index_pptx(
-                pptx_path=pptx_path,
-                filename=filename
-            )
-
-            if result is None:
+            try:
+                result = index_pptx(
+                    pptx_path=pptx_path,
+                    filename=filename
+                )
+                if result is None:
+                    continue
+            except Exception as e:
+                print(f"Skipping {pptx_path}: {e}")
                 continue
 
             insert_file(
@@ -459,12 +474,15 @@ def run_incremental_scan():
 
             delete_pptx_chunks(filename)
 
-            result = index_pptx(
-                pptx_path=pptx_path,
-                filename=filename
-            )
-
-            if result is None:
+            try:
+                result = index_pptx(
+                    pptx_path=pptx_path,
+                    filename=filename
+                )
+                if result is None:
+                    continue
+            except Exception as e:
+                print(f"Skipping {pptx_path}: {e}")
                 continue
 
             update_file(

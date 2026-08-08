@@ -2,12 +2,9 @@ from docx import Document
 
 
 def extract_text_from_docx(file_path):
-
-    document = Document(file_path)
-
-    paragraphs = []
-
-    for paragraph in document.paragraphs:
-        paragraphs.append(paragraph.text)
-
-    return "\n".join(paragraphs)
+    try:
+        document = Document(file_path)
+        return "\n".join(p.text for p in document.paragraphs)
+    except Exception as e:
+        print(f"Error reading DOCX {file_path}: {e}")
+        return ""

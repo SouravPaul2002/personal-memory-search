@@ -1,6 +1,6 @@
 # backend/api/upload.py
 
-from fastapi import APIRouter, UploadFile, File,  Form
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 import os
 import json
 from pathlib import Path
@@ -50,9 +50,16 @@ async def upload_file(
     print("URI:", original_uri)
     print("==========")
 
-    folder = get_save_folder(
-        file.filename
-    )
+    # --- Path traversal protection ---
+    if ".." in (file.filename or ""):
+        raise HTTPException(status_code=400, detail="Invalid filename")
+
+    safe_filename = os.path.basename(file.filename)
+
+    if not safe_filename:
+        raise HTTPException(status_code=400, detail="Invalid filename")
+
+    folder = get_save_folder(safe_filename)
 
     if folder is None:
         return {
@@ -65,10 +72,7 @@ async def upload_file(
         exist_ok=True
     )
 
-    save_path = os.path.join(
-        folder,
-        file.filename
-    )
+    save_path = os.path.join(folder, safe_filename)
 
     with open(
         save_path,
@@ -80,11 +84,11 @@ async def upload_file(
 
     # --- Write upload metadata to SQLite database ---
     from backend.indexing.file_registry import save_upload_metadata
-    save_upload_metadata(file.filename, original_uri)
+    save_upload_metadata(safe_filename, original_uri)
 
     # run_incremental_scan()
 
     return {
         "success": True,
-        "filename": file.filename
+        "filename": safe_filename
     }

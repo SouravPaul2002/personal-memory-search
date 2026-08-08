@@ -187,12 +187,14 @@ def search_files(
 
         if time_filter:
 
+            start_time, end_time = time_filter
+
             created_time = registry_data.get(
                 "created_time",
                 0
             )
 
-            if created_time < time_filter:
+            if not (start_time <= created_time <= end_time):
 
                 continue
 

@@ -15,4 +15,10 @@ def get_connection() -> sqlite3.Connection:
     # Enable foreign keys
     conn.execute("PRAGMA foreign_keys = ON;")
 
-    return conn
+    # WAL mode: readers and writers don't block each other
+    conn.execute("PRAGMA journal_mode = WAL;")
+
+    # Retry for up to 5s before raising "database is locked"
+    conn.execute("PRAGMA busy_timeout = 5000;")
+
+    return conn

@@ -124,11 +124,11 @@ def fusion_search(
                 "distance": result["distance"],
                 "original_uri": registry_data.get("original_uri"),
                 "file_size": round(
-                    registry_data.get("file_size", 0) / (1024 * 1024),
+                    (registry_data.get("file_size") or 0) / (1024 * 1024),
                     2
                 ),
                 "modified_time": registry_data.get("modified_time"),
-                "preview": registry_data.get("summary", "")[:250]
+                "preview": (registry_data.get("summary") or "")[:250]
             }
         )
 

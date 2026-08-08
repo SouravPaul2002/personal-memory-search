@@ -1,11 +1,14 @@
+import shutil
+import os
+
 from PIL import Image
 import pytesseract
 
-# Windows path
-pytesseract.pytesseract.tesseract_cmd = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe" #personal laptop
-    # r"D:\sourav paul\New folder\tesseract.exe" #office laptop
-)
+tesseract_path = os.environ.get("TESSERACT_CMD") or shutil.which("tesseract")
+if tesseract_path:
+    pytesseract.pytesseract.tesseract_cmd = tesseract_path
+
+
 
 
 def extract_text_from_image(image_path):

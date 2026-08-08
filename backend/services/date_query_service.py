@@ -9,40 +9,33 @@ def extract_time_filter(
 
     today = datetime.now()
 
+    today_start = today.replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    )
+
     if "today" in query:
 
-        start = today.replace(
-            hour=0,
-            minute=0,
-            second=0,
-            microsecond=0
-        )
-
-        return start.timestamp()
+        return today_start.timestamp(), today.timestamp()
 
     if "yesterday" in query:
 
-        start = (
-            today - timedelta(days=1)
-        ).replace(
-            hour=0,
-            minute=0,
-            second=0,
-            microsecond=0
-        )
+        yesterday_start = today_start - timedelta(days=1)
 
-        return start.timestamp()
+        return yesterday_start.timestamp(), today_start.timestamp()
 
     if "last week" in query:
 
-        start = today - timedelta(days=7)
+        start = today_start - timedelta(days=7)
 
-        return start.timestamp()
+        return start.timestamp(), today.timestamp()
 
     if "last month" in query:
 
-        start = today - timedelta(days=30)
+        start = today_start - timedelta(days=30)
 
-        return start.timestamp()
+        return start.timestamp(), today.timestamp()
 
-    return None
+    return None
