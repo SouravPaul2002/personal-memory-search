@@ -23,12 +23,12 @@ def insert_file(
     topics=None,
     summary=None,
 ):
-    """Inserts a new file record into the files table."""
+    """Inserts a new file record into the files table. Silently ignores duplicate file_uri."""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         """
-        INSERT INTO files (
+        INSERT OR IGNORE INTO files (
             file_uri,
             original_uri,
             file_name,

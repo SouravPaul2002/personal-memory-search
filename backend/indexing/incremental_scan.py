@@ -551,6 +551,9 @@ def run_incremental_scan():
         elif job["type"] == "image":
             path = job["image_path"]
 
+        else:
+            continue
+
         original_uri = (
             upload_metadata.get(
                 job["filename"],
@@ -560,21 +563,37 @@ def run_incremental_scan():
             )
         )
 
-        insert_file(
-            file_uri=path,
-            original_uri=original_uri,
-            file_name=job["filename"],
-            file_type=job["type"],
-            mime_type=job["mime_type"],
-            file_size=job["file_size"],
-            created_time=job["created_time"],
-            modified_time=job["modified_time"],
-            last_access_time=time.time(),
-            content_hash=job["file_hash"],
-            keywords=job["result"].get("keywords", []),
-            topics=job["result"].get("topics", []),
-            summary=job["result"].get("summary", "")
-        )
+        # Upsert: update if already in DB (e.g. stale queue from prior run), else insert
+        if path in registry:
+            update_file(
+                file_uri=path,
+                original_uri=original_uri,
+                file_name=job["filename"],
+                file_type=job["type"],
+                mime_type=job["mime_type"],
+                file_size=job["file_size"],
+                modified_time=job["modified_time"],
+                content_hash=job["file_hash"],
+                keywords=job["result"].get("keywords", []),
+                topics=job["result"].get("topics", []),
+                summary=job["result"].get("summary", "")
+            )
+        else:
+            insert_file(
+                file_uri=path,
+                original_uri=original_uri,
+                file_name=job["filename"],
+                file_type=job["type"],
+                mime_type=job["mime_type"],
+                file_size=job["file_size"],
+                created_time=job["created_time"],
+                modified_time=job["modified_time"],
+                last_access_time=time.time(),
+                content_hash=job["file_hash"],
+                keywords=job["result"].get("keywords", []),
+                topics=job["result"].get("topics", []),
+                summary=job["result"].get("summary", "")
+            )
 
     # Backfill original_uri for already-indexed entries that still have null.
     for path, row in registry.items():

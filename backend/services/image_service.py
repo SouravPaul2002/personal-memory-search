@@ -4,7 +4,14 @@ import os
 from PIL import Image
 import pytesseract
 
-tesseract_path = os.environ.get("TESSERACT_CMD") or shutil.which("tesseract")
+# Resolve Tesseract path: env var > PATH > Windows default install location
+_WINDOWS_DEFAULT = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+tesseract_path = (
+    os.environ.get("TESSERACT_CMD")
+    or shutil.which("tesseract")
+    or (os.path.isfile(_WINDOWS_DEFAULT) and _WINDOWS_DEFAULT)
+    or None
+)
 if tesseract_path:
     pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
