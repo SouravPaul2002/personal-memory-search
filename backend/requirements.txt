@@ -1,0 +1,13 @@
+chromadb
+sentence-transformers
+pypdf
+pytesseract
+Pillow
+yake
+python-docx
+python-pptx
+fastapi
+uvicorn
+open_clip_torch
+pymupdf
+pyspellchecker

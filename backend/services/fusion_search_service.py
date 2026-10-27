@@ -118,11 +118,11 @@ def fusion_search(
         merged.append(
             {
                 "file_name": result["file_name"],
-                "file_type": registry_data.get("file_type"),
+                "file_type": registry_data.get("file_type") or "image",
                 "path": path,
                 "source": "clip",
                 "distance": result["distance"],
-                "original_uri": registry_data.get("original_uri"),
+                "original_uri": registry_data.get("original_uri") or path,
                 "file_size": round(
                     (registry_data.get("file_size") or 0) / (1024 * 1024),
                     2

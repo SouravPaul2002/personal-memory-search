@@ -38,24 +38,34 @@ IMAGE_MIME = {
 def serve_file(file_type: str, file_name: str):
     """
     Streams a stored file back to the client.
+    First checks default data folder; if not found, checks SQLite registry for custom scanned paths.
     E.g. GET /files/serve/pdf/my-doc.pdf
     """
+    file_path = None
     folder = FOLDER_MAP.get(file_type)
-    if folder is None:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Unknown file_type: {file_type}"
-        )
 
-    file_path = os.path.abspath(
-        os.path.join(folder, file_name)
-    )
+    if folder:
+        candidate = os.path.abspath(os.path.join(folder, file_name))
+        if candidate.startswith(os.path.abspath(folder)) and os.path.exists(candidate):
+            file_path = candidate
 
-    # Safety: make sure we don't escape the data folder
-    if not file_path.startswith(os.path.abspath(folder)):
-        raise HTTPException(status_code=400, detail="Invalid file path")
+    # Fallback: check SQLite file registry for scanned custom directory paths
+    if not file_path:
+        try:
+            from backend.database.database import get_connection
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT file_uri, mime_type FROM files WHERE file_name = ? AND is_deleted = 0 ORDER BY last_indexed DESC LIMIT 1",
+                (file_name,)
+            )
+            row = cursor.fetchone()
+            if row and os.path.exists(row["file_uri"]):
+                file_path = row["file_uri"]
+        except Exception:
+            pass
 
-    if not os.path.exists(file_path):
+    if not file_path or not os.path.exists(file_path):
         raise HTTPException(
             status_code=404,
             detail=f"File not found: {file_name}"
