@@ -19,6 +19,10 @@ from backend.services.file_metadata_service import get_mime_type
 from backend.services.hash_service import (
     get_file_hash
 )
+from backend.utils.file_utils import (
+    norm_path,
+    is_file_in_folders
+)
 
 from backend.indexing.pdf_indexer import (
     index_pdf,
@@ -83,6 +87,14 @@ os.makedirs(TXT_FOLDER, exist_ok=True)
 os.makedirs(DOCX_FOLDER, exist_ok=True)
 os.makedirs(PPTX_FOLDER, exist_ok=True)
 
+STANDARD_FOLDERS = [
+    PDF_FOLDER,
+    IMAGE_FOLDER,
+    TXT_FOLDER,
+    DOCX_FOLDER,
+    PPTX_FOLDER
+]
+
 def run_incremental_scan():
     new_files = 0
     modified_files = 0
@@ -90,7 +102,7 @@ def run_incremental_scan():
     
     # Load all active files from the SQLite database
     db_files = get_all_files()
-    registry = {row["file_uri"]: row for row in db_files}
+    registry = {norm_path(row["file_uri"]): row for row in db_files}
 
     current_files = set()
 
@@ -103,8 +115,9 @@ def run_incremental_scan():
         pdf_path = os.path.abspath(
             os.path.join(PDF_FOLDER, filename)
         )
+        norm_p = norm_path(pdf_path)
 
-        current_files.add(pdf_path)
+        current_files.add(norm_p)
 
         created_time = os.path.getctime(pdf_path)
 
@@ -117,7 +130,7 @@ def run_incremental_scan():
         file_hash = get_file_hash(pdf_path)
 
         # NEW FILE
-        if pdf_path not in registry:
+        if norm_p not in registry:
 
             print(f"\nNEW PDF: {filename}")
             new_files += 1
@@ -137,7 +150,7 @@ def run_incremental_scan():
             )
 
         # MODIFIED FILE
-        elif registry[pdf_path]["content_hash"] != file_hash:
+        elif registry[norm_p]["content_hash"] != file_hash:
 
             print(f"\nMODIFIED PDF: {filename}")
             modified_files += 1
@@ -152,8 +165,9 @@ def run_incremental_scan():
             if result is None:
                 continue
 
+            target_uri = registry[norm_p].get("file_uri", pdf_path)
             update_file(
-                file_uri=pdf_path,
+                file_uri=target_uri,
                 modified_time=modified_time,
                 mime_type=mime_type,
                 file_size=file_size,
@@ -172,8 +186,9 @@ def run_incremental_scan():
         image_path = os.path.abspath(
             os.path.join(IMAGE_FOLDER, filename)
         )
+        norm_p = norm_path(image_path)
 
-        current_files.add(image_path)
+        current_files.add(norm_p)
 
         modified_time = os.path.getmtime(image_path)
 
@@ -188,7 +203,7 @@ def run_incremental_scan():
         file_hash = get_file_hash(image_path)
 
         # NEW FILE
-        if image_path not in registry:
+        if norm_p not in registry:
 
             print(f"\nNEW IMAGE: {filename}")
             new_files += 1
@@ -208,7 +223,7 @@ def run_incremental_scan():
             )
 
         # MODIFIED FILE
-        elif registry[image_path]["content_hash"] != file_hash:
+        elif registry[norm_p]["content_hash"] != file_hash:
 
             print(f"\nMODIFIED IMAGE: {filename}")
             modified_files += 1
@@ -223,8 +238,9 @@ def run_incremental_scan():
             if result is None:
                 continue
 
+            target_uri = registry[norm_p].get("file_uri", image_path)
             update_file(
-                file_uri=image_path,
+                file_uri=target_uri,
                 modified_time=modified_time,
                 mime_type=mime_type,
                 file_size=file_size,
@@ -243,8 +259,9 @@ def run_incremental_scan():
         txt_path = os.path.abspath(
             os.path.join(TXT_FOLDER, filename)
         )
+        norm_p = norm_path(txt_path)
 
-        current_files.add(txt_path)
+        current_files.add(norm_p)
 
         modified_time = os.path.getmtime(txt_path)
 
@@ -259,7 +276,7 @@ def run_incremental_scan():
         file_hash = get_file_hash(txt_path)
 
         # NEW FILE
-        if txt_path not in registry:
+        if norm_p not in registry:
 
             print(f"\nNEW TXT: {filename}")
             new_files += 1
@@ -292,7 +309,7 @@ def run_incremental_scan():
             )
 
         # MODIFIED FILE
-        elif registry[txt_path]["content_hash"] != file_hash:
+        elif registry[norm_p]["content_hash"] != file_hash:
 
             print(f"\nMODIFIED TXT: {filename}")
             modified_files += 1
@@ -310,8 +327,9 @@ def run_incremental_scan():
                 print(f"Skipping {txt_path}: {e}")
                 continue
 
+            target_uri = registry[norm_p].get("file_uri", txt_path)
             update_file(
-                file_uri=txt_path,
+                file_uri=target_uri,
                 modified_time=modified_time,
                 mime_type=mime_type,
                 file_size=file_size,
@@ -330,8 +348,9 @@ def run_incremental_scan():
         docx_path = os.path.abspath(
             os.path.join(DOCX_FOLDER, filename)
         )
+        norm_p = norm_path(docx_path)
 
-        current_files.add(docx_path)
+        current_files.add(norm_p)
 
         modified_time = os.path.getmtime(docx_path)
 
@@ -346,7 +365,7 @@ def run_incremental_scan():
         file_hash = get_file_hash(docx_path)
 
         # NEW FILE
-        if docx_path not in registry:
+        if norm_p not in registry:
 
             print(f"\nNEW DOCX: {filename}")
             new_files += 1
@@ -379,7 +398,7 @@ def run_incremental_scan():
             )
 
         # MODIFIED FILE
-        elif registry[docx_path]["content_hash"] != file_hash:
+        elif registry[norm_p]["content_hash"] != file_hash:
 
             print(f"\nMODIFIED DOCX: {filename}")
             modified_files += 1
@@ -397,8 +416,9 @@ def run_incremental_scan():
                 print(f"Skipping {docx_path}: {e}")
                 continue
 
+            target_uri = registry[norm_p].get("file_uri", docx_path)
             update_file(
-                file_uri=docx_path,
+                file_uri=target_uri,
                 modified_time=modified_time,
                 mime_type=mime_type,
                 file_size=file_size,
@@ -418,8 +438,9 @@ def run_incremental_scan():
         pptx_path = os.path.abspath(
             os.path.join(PPTX_FOLDER, filename)
         )
+        norm_p = norm_path(pptx_path)
 
-        current_files.add(pptx_path)
+        current_files.add(norm_p)
 
         modified_time = os.path.getmtime(pptx_path)
 
@@ -434,7 +455,7 @@ def run_incremental_scan():
         file_hash = get_file_hash(pptx_path)
 
         # NEW FILE
-        if pptx_path not in registry:
+        if norm_p not in registry:
 
             print(f"\nNEW PPTX: {filename}")
             new_files += 1
@@ -467,7 +488,7 @@ def run_incremental_scan():
             )
 
         # MODIFIED FILE
-        elif registry[pptx_path]["content_hash"] != file_hash:
+        elif registry[norm_p]["content_hash"] != file_hash:
 
             print(f"\nMODIFIED PPTX: {filename}")
             modified_files += 1
@@ -485,8 +506,9 @@ def run_incremental_scan():
                 print(f"Skipping {pptx_path}: {e}")
                 continue
 
+            target_uri = registry[norm_p].get("file_uri", pptx_path)
             update_file(
-                file_uri=pptx_path,
+                file_uri=target_uri,
                 modified_time=modified_time,
                 mime_type=mime_type,
                 file_size=file_size,
@@ -497,42 +519,37 @@ def run_incremental_scan():
             )
 
 
-    # DELETED FILES
-    stored_files = set(registry.keys())
+    # DELETED FILES - Reconcile ONLY active files in the standard storage folders
+    stored_standard_files = [
+        row for norm_p, row in registry.items()
+        if is_file_in_folders(row["file_uri"], STANDARD_FOLDERS, recursive=False)
+    ]
 
-    deleted_file_paths = (
-        stored_files - current_files
-    )
+    for row in stored_standard_files:
+        row_norm_p = norm_path(row["file_uri"])
+        if row_norm_p not in current_files:
+            filename = row["file_name"]
+            file_type = row["file_type"]
 
-    for deleted_file in deleted_file_paths:
+            print(
+                f"\nDELETED {file_type.upper()}: "
+                f"{filename}"
+            )
 
-        filename = registry[deleted_file]["file_name"]
+            deleted_files += 1
 
-        file_type = registry[deleted_file]["file_type"]
+            if file_type == "pdf":
+                delete_pdf_chunks(filename)
+            elif file_type == "image":
+                delete_image_chunks(filename)
+            elif file_type == "txt":
+                delete_txt_chunks(filename)
+            elif file_type == "docx":
+                delete_docx_chunks(filename)
+            elif file_type == "pptx":
+                delete_pptx_chunks(filename)
 
-        print(
-            f"\nDELETED {file_type.upper()}: "
-            f"{filename}"
-        )
-
-        deleted_files += 1
-
-        if file_type == "pdf":
-            delete_pdf_chunks(filename)
-
-        elif file_type == "image":
-            delete_image_chunks(filename)
-
-        elif file_type == "txt":
-            delete_txt_chunks(filename)
-
-        elif file_type == "docx":
-            delete_docx_chunks(filename)
-
-        elif file_type == "pptx":
-            delete_pptx_chunks(filename)
-
-        mark_deleted(deleted_file)
+            mark_deleted(row["file_uri"])
 
     print(
         f"Jobs queued: "
@@ -563,10 +580,11 @@ def run_incremental_scan():
             )
         )
 
+        norm_job_path = norm_path(path)
         # Upsert: update if already in DB (e.g. stale queue from prior run), else insert
-        if path in registry:
+        if norm_job_path in registry:
             update_file(
-                file_uri=path,
+                file_uri=registry[norm_job_path]["file_uri"],
                 original_uri=original_uri,
                 file_name=job["filename"],
                 file_type=job["type"],
@@ -596,13 +614,13 @@ def run_incremental_scan():
             )
 
     # Backfill original_uri for already-indexed entries that still have null.
-    for path, row in registry.items():
+    for norm_p, row in registry.items():
         if row["original_uri"] is None:
             filename = row["file_name"]
             if filename and filename in upload_metadata:
                 uri = upload_metadata[filename].get("original_uri")
                 if uri:
-                    update_file(file_uri=path, original_uri=uri)
+                    update_file(file_uri=row["file_uri"], original_uri=uri)
                     print(f"Backfilled original_uri for: {filename}")
 
     print("\nIncremental Scan Complete")

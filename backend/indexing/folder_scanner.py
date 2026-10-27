@@ -6,9 +6,11 @@ from backend.indexing.file_registry import (
     get_all_files,
     insert_file,
     update_file,
+    mark_deleted,
 )
 from backend.services.file_metadata_service import get_mime_type
 from backend.services.hash_service import get_file_hash
+from backend.utils.file_utils import norm_path, is_file_in_dir
 
 from backend.indexing.pdf_indexer import index_pdf, delete_pdf_chunks
 from backend.indexing.image_indexer import index_image, delete_image_chunks
@@ -46,13 +48,14 @@ def scan_custom_folder(folder_path: str, recursive: bool = True):
     if not os.path.isdir(clean_folder):
         raise ValueError(f"Path is not a directory: {clean_folder}")
 
-    # Load existing registry as dicts
+    # Load existing active registry as dicts, keyed by normalized path
     db_files = get_all_files()
-    registry = {row["file_uri"]: dict(row) for row in db_files}
+    registry = {norm_path(row["file_uri"]): dict(row) for row in db_files}
 
     new_files = 0
     modified_files = 0
     skipped_files = 0
+    deleted_files = 0
     errors = []
     total_found = 0
 
@@ -73,9 +76,12 @@ def scan_custom_folder(folder_path: str, recursive: bool = True):
                     collected_paths.append(full_p)
 
     total_found = len(collected_paths)
+    current_norm_paths = set()
 
     for full_path in collected_paths:
         abs_path = os.path.abspath(full_path)
+        norm_p = norm_path(abs_path)
+        current_norm_paths.add(norm_p)
         filename = os.path.basename(abs_path)
         ext = os.path.splitext(filename)[1].lower()
 
@@ -102,12 +108,12 @@ def scan_custom_folder(folder_path: str, recursive: bool = True):
                 continue
 
             # Check if unchanged
-            if abs_path in registry and registry[abs_path].get("content_hash") == file_hash:
+            if norm_p in registry and registry[norm_p].get("content_hash") == file_hash:
                 skipped_files += 1
                 continue
 
             # If modified, remove old chunks first
-            is_modified = abs_path in registry
+            is_modified = norm_p in registry
             if is_modified:
                 _delete_chunks_for_file(file_type, filename)
 
@@ -129,8 +135,9 @@ def scan_custom_folder(folder_path: str, recursive: bool = True):
 
             # Upsert into database
             if is_modified:
+                target_file_uri = registry[norm_p].get("file_uri", abs_path)
                 update_file(
-                    file_uri=abs_path,
+                    file_uri=target_file_uri,
                     original_uri=abs_path,
                     file_name=filename,
                     file_type=file_type,
@@ -164,12 +171,28 @@ def scan_custom_folder(folder_path: str, recursive: bool = True):
         except Exception as e:
             errors.append(f"{filename}: {str(e)}")
 
+    # Reconcile deleted files: only for files previously indexed within clean_folder
+    stored_folder_files = [
+        row for row in registry.values()
+        if is_file_in_dir(row["file_uri"], clean_folder, recursive=recursive)
+    ]
+
+    for row in stored_folder_files:
+        row_norm_p = norm_path(row["file_uri"])
+        if row_norm_p not in current_norm_paths:
+            filename = row["file_name"]
+            file_type = row["file_type"]
+            _delete_chunks_for_file(file_type, filename)
+            mark_deleted(row["file_uri"])
+            deleted_files += 1
+
     return {
         "folder": clean_folder,
         "total_scanned": total_found,
         "new_files": new_files,
         "modified_files": modified_files,
         "skipped_files": skipped_files,
+        "deleted_files": deleted_files,
         "errors": errors[:10]  # Return up to 10 error snippets
     }
 

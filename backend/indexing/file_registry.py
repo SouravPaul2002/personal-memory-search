@@ -23,12 +23,13 @@ def insert_file(
     topics=None,
     summary=None,
 ):
-    """Inserts a new file record into the files table. Silently ignores duplicate file_uri."""
+    """Inserts a new file record into the files table or updates/un-deletes if already exists."""
     conn = get_connection()
     cursor = conn.cursor()
+    now = time.time()
     cursor.execute(
         """
-        INSERT OR IGNORE INTO files (
+        INSERT INTO files (
             file_uri,
             original_uri,
             file_name,
@@ -46,6 +47,22 @@ def insert_file(
             topics,
             summary
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
+        ON CONFLICT(file_uri) DO UPDATE SET
+            original_uri = COALESCE(excluded.original_uri, files.original_uri),
+            file_name = excluded.file_name,
+            file_type = excluded.file_type,
+            mime_type = excluded.mime_type,
+            file_size = excluded.file_size,
+            created_time = excluded.created_time,
+            modified_time = excluded.modified_time,
+            last_access_time = excluded.last_access_time,
+            content_hash = excluded.content_hash,
+            last_indexed = excluded.last_indexed,
+            last_scan_time = excluded.last_scan_time,
+            is_deleted = 0,
+            keywords = excluded.keywords,
+            topics = excluded.topics,
+            summary = excluded.summary
         """,
         (
             file_uri,
@@ -56,10 +73,10 @@ def insert_file(
             file_size,
             created_time,
             modified_time,
-            last_access_time or time.time(),
+            last_access_time or now,
             content_hash,
-            time.time(),
-            time.time(),
+            now,
+            now,
             json.dumps(keywords or []),
             json.dumps(topics or []),
             summary

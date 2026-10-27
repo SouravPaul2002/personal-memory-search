@@ -77,7 +77,7 @@ def scan_folder(req: FolderScanRequest):
 
         return {
             "success": True,
-            "message": f"Folder scan complete: {result['new_files']} added, {result['modified_files']} updated, {result['skipped_files']} unchanged.",
+            "message": f"Folder scan complete: {result['new_files']} added, {result['modified_files']} updated, {result.get('deleted_files', 0)} deleted, {result['skipped_files']} unchanged.",
             **result
         }
     except ValueError as ve:
